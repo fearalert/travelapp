@@ -1,0 +1,35 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:splash_screen_view/SplashScreenView.dart';
+import 'package:travelapp/constants/constants.dart';
+import 'package:travelapp/screens/login.dart';
+
+class WelcomeScreen extends StatelessWidget {
+  static const String id = '/welcome';
+
+  const WelcomeScreen({Key? key}) : super(key: key);
+
+  //   // Timer(
+  //   //     Duration(seconds: 4),
+  //   //     () => Get.offAllNamed(
+  //   //         userAuthentication.currentUser == null ? Login.id : MainScreen.id));
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    return SplashScreenView(
+      backgroundColor: const Color(0xffffffff),
+      //  navigateroute: result != null ? Home(uid: result.uid) : SignUp(),
+      navigateRoute: const LogInScreen(),
+      duration: 3000,
+      text: 'Tours & Travels',
+      textStyle: GoogleFonts.arizonia(
+        color: kPrimaryColor,
+        fontSize: 50.0,
+        fontWeight: FontWeight.bold,
+      ),
+
+      pageRouteTransition: PageRouteTransition.SlideTransition,
+    );
+  }
+}

@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:travelapp/model/usermodel.dart';
 import 'package:travelapp/navigationtab/homepage.dart';
+import 'package:travelapp/screens/confirmverification.dart';
 import 'package:travelapp/screens/register.dart';
-
 import 'package:travelapp/main.dart';
+import 'package:travelapp/utils/utils.dart';
 // user signin authentication
 
 class UserAuthentication {
@@ -64,9 +64,12 @@ class UserAuthentication {
 
   Future<String?> signUp(String? email, String? password) async {
     try {
-      await _auth
+      String? code = await _auth
           .createUserWithEmailAndPassword(email: email!, password: password!)
-          .then((value) => postDetailsToFirestore());
+          .then((value) {
+        // sendEmailVerification();
+        postDetailsToFirestore();
+      });
     } on FirebaseAuthException catch (error) {
       switch (error.code) {
         case 'email-already-in-use':
@@ -121,12 +124,29 @@ class UserAuthentication {
 
   Future<String?> sendEmailVerification({String? email}) async {
     User? user = currentUser;
-    String code;
+    String? code;
     try {
       await user?.sendEmailVerification();
       code = 'success';
     } on FirebaseAuthException catch (e) {
       code = e.code;
+      switch (e.code) {
+        case 'too-many-requests':
+          getSnackBar(
+            title: "Alert!",
+            message:
+                'Too many requests. We have blocked all requests from this device due to unusual activity. Try again later.',
+            color: Colors.red.shade300,
+          );
+          break;
+        default:
+          getSnackBar(
+            title: "Error",
+            message: 'Something went wrong.',
+            color: Colors.red.shade300,
+          );
+          print(e.code);
+      }
     }
     return code;
   }
@@ -155,7 +175,6 @@ class UserAuthentication {
     userModel.uid = user.uid;
     userModel.name = registrationController.nameController.text;
     userModel.phoneNo = registrationController.phoneController.text;
-
     await firebaseFirestore
         .collection("users")
         .doc(user.uid)
@@ -166,6 +185,5 @@ class UserAuthentication {
       color: Colors.green.shade300,
     );
     print('Registration Sucessful');
-    Get.toNamed(HomePage.id);
   }
 }

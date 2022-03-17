@@ -5,6 +5,7 @@ import 'package:travelapp/authentication/userauthentication.dart';
 import 'package:travelapp/components/customPasswordTextField.dart';
 import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/main.dart';
+import 'package:travelapp/screens/confirmverification.dart';
 import 'package:travelapp/screens/login.dart';
 
 class Registration extends StatefulWidget {
@@ -238,6 +239,8 @@ class _RegistrationState extends State<Registration> {
       final userAuthentication = UserAuthentication();
       userAuthentication.signUp(registrationController.emailController.text,
           registrationController.passwordController.text);
+      userAuthentication.sendEmailVerification();
+      Get.toNamed(ConfirmEmailVerification.id);
     }
   }
 }

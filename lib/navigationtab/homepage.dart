@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final searchController = TextEditingController();
     final List<String> categoryName = [
-      '${loggedInUser.name}',
+      'Pokhara',
       'Mustang',
       'Lumbini',
       'Kanyam',

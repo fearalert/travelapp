@@ -4,11 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:travelapp/controllers/registrationcontroller.dart';
 import 'package:travelapp/navigationtab/homepage.dart';
-import 'package:travelapp/screens/homescreen.dart';
 import 'package:travelapp/screens/login.dart';
 import 'package:travelapp/screens/register.dart';
 import 'package:travelapp/screens/welcome.dart';
+
+final RegistrationController registrationController = RegistrationController();
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();

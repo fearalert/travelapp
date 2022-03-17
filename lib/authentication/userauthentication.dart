@@ -5,15 +5,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:travelapp/model/usermodel.dart';
 import 'package:travelapp/navigationtab/homepage.dart';
+import 'package:travelapp/screens/register.dart';
 
-import '../controllers/registrationcontroller.dart';
-
+import 'package:travelapp/main.dart';
 // user signin authentication
 
 class UserAuthentication {
-  final RegistrationController registrationController =
-      RegistrationController();
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   User? get currentUser => _auth.currentUser;
@@ -24,13 +21,43 @@ class UserAuthentication {
           .signInWithEmailAndPassword(email: email!, password: password!)
           .then((uid) => {
                 print("Login Successful"),
-                Fluttertoast.showToast(msg: "Login Sucessful"),
+                getSnackBar(title: "Sucessful", message: 'Login Sucessful'),
+                // Fluttertoast.showToast(msg: "Login Sucessful"),
                 Get.offAllNamed(HomePage.id)
               });
     } on FirebaseAuthException catch (error) {
-      print(error);
-      Fluttertoast.showToast(
-          msg: "Either password is incorrect\n or the account does not exist.");
+      switch (error.code) {
+        case 'user-not-found':
+          getSnackBar(
+            title: "Error",
+            message: 'user not found.',
+            color: Colors.red.shade300,
+          );
+          break;
+        case 'wrong-password':
+          getSnackBar(
+            title: "Error",
+            message: 'Password doesnot match.',
+            color: Colors.red.shade300,
+          );
+          break;
+        case 'invalid-email':
+          getSnackBar(
+            title: "Error",
+            message: 'Invalid Email.',
+            color: Colors.red.shade300,
+          );
+          break;
+        default:
+          getSnackBar(
+            title: "Error",
+            message: 'Something went wrong.',
+            color: Colors.red.shade300,
+          );
+          print(error.code);
+      }
+      // Fluttertoast.showToast(
+      //     msg: "Either password is incorrect\n or the account does not exist.");
     }
     return null;
   }
@@ -41,8 +68,38 @@ class UserAuthentication {
           .createUserWithEmailAndPassword(email: email!, password: password!)
           .then((value) => postDetailsToFirestore());
     } on FirebaseAuthException catch (error) {
-      print(error);
-      Fluttertoast.showToast(msg: 'Error in SignUp. Please try again.');
+      switch (error.code) {
+        case 'email-already-in-use':
+          getSnackBar(
+            title: "Error",
+            message: 'Email already in use.',
+            color: Colors.red.shade300,
+          );
+          break;
+        case 'invalid-email':
+          getSnackBar(
+            title: "Error",
+            message: 'Invalid Email.',
+            color: Colors.red.shade300,
+          );
+          break;
+        case 'weak-password':
+          getSnackBar(
+            title: "Error",
+            message: 'Weak Password.',
+            color: Colors.red.shade300,
+          );
+          break;
+        default:
+          getSnackBar(
+            title: "Error",
+            message: 'Something went wrong.',
+            color: Colors.red.shade300,
+          );
+          print(error.code);
+      }
+      // print(error);
+      // Fluttertoast.showToast(msg: 'Error in SignUp. Please try again.');
     }
     return null;
   }
@@ -103,7 +160,11 @@ class UserAuthentication {
         .collection("users")
         .doc(user.uid)
         .set(userModel.toMap());
-    Fluttertoast.showToast(msg: "Account created Sucessfully");
+    getSnackBar(
+      title: "Congratulations",
+      message: 'Account created Sucessfully',
+      color: Colors.green.shade300,
+    );
     print('Registration Sucessful');
     Get.toNamed(HomePage.id);
   }

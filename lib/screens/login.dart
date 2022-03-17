@@ -1,17 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travelapp/authentication/userauthentication.dart';
 import 'package:travelapp/components/customPasswordTextField.dart';
-
 import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/controllers/logincontroller.dart';
-import 'package:travelapp/navigationtab/homepage.dart';
-import 'package:travelapp/screens/homescreen.dart';
 import 'package:travelapp/screens/register.dart';
-import 'package:travelapp/utils/utils.dart';
 
 class LogInScreen extends StatefulWidget {
   static const id = '/login';

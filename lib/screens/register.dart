@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:travelapp/authentication/userauthentication.dart';
 import 'package:travelapp/components/customPasswordTextField.dart';
 import 'package:travelapp/constants/constants.dart';
-import 'package:travelapp/controllers/registrationcontroller.dart';
+import 'package:travelapp/main.dart';
 import 'package:travelapp/screens/login.dart';
 
 class Registration extends StatefulWidget {
@@ -17,8 +17,6 @@ class Registration extends StatefulWidget {
 
 class _RegistrationState extends State<Registration> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final RegistrationController registrationController =
-      RegistrationController();
 
   @override
   Widget build(BuildContext context) {

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:travelapp/authentication/userauthentication.dart';
 
 DatabaseReference serviceRefrence =
-    FirebaseDatabase.instance.reference().child('services');
+    FirebaseDatabase.instance.reference().child('packages');
 
-DatabaseReference prosRefrence =
-    FirebaseDatabase.instance.reference().child('pros');
+DatabaseReference adminRefrence =
+    FirebaseDatabase.instance.reference().child('admim');
 
 // final cloudStorage = CloudStorage();
 

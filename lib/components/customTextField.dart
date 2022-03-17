@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:regexed_validator/regexed_validator.dart';
 import 'package:travelapp/constants/constants.dart';
 
 class CustomTextField extends StatefulWidget {
@@ -34,7 +33,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       child: TextFormField(
         validator: (value) {
           if (value!.isEmpty) {
-            return '🚩 Text is too short.';
+            return 'Text is too short.';
           } else {
             return null;
           }

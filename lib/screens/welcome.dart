@@ -9,12 +9,6 @@ class WelcomeScreen extends StatelessWidget {
 
   const WelcomeScreen({Key? key}) : super(key: key);
 
-  //   // Timer(
-  //   //     Duration(seconds: 4),
-  //   //     () => Get.offAllNamed(
-  //   //         userAuthentication.currentUser == null ? Login.id : MainScreen.id));
-  // }
-
   @override
   Widget build(BuildContext context) {
     return SplashScreenView(

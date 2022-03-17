@@ -36,13 +36,15 @@ dependencies:
   cupertino_icons: ^1.0.2
   get: ^4.6.1
   google_fonts: ^2.3.1
+  fluttertoast: ^8.0.9
   staggered_grid_view_flutter: ^0.0.4
-  regexed_validator: ^2.0.0+1
   cloud_firestore: ^3.1.10
   firebase_auth: ^3.3.11
   firebase_core: ^1.8.0
   firebase_database: ^8.0.1
   splash_screen_view: ^3.0.0
+  firebase_messaging: ^10.0.3
+
 
 
 dev_dependencies:

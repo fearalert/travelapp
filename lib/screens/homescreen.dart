@@ -26,19 +26,19 @@ class _HomeScreenState extends State<HomeScreen>
     // });
 
     super.initState();
-    // tabController = TabController(length: 3, vsync: this);
+    tabController = TabController(length: 4, vsync: this);
     // notificationHandler.onMessageHandler();
     // resolveToken();
   }
 
   // resolveToken() async {
   //   try {
-  //     String token = await database.getMyToken();
-  //     String deviceToken = await FirebaseMessaging.instance.getToken();
+  //     String? token = await Database.getMyToken();
+  //     String? deviceToken = await FirebaseMessaging.instance.getToken();
 
   //     if (token == null || token == '' || token != deviceToken) {
   //       // String token = await FirebaseMessaging.instance.getToken();
-  //       database.saveToken(deviceToken);
+  //       Database.saveToken(deviceToken);
   //       print(deviceToken);
   //     }
   //   } catch (e) {
@@ -65,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen>
         children: const [
           HomePage(),
           MyPackages(),
+          MyPackages(),
           Profile(),
         ],
       ),
@@ -75,46 +76,20 @@ class _HomeScreenState extends State<HomeScreen>
         showSelectedLabels: true,
         showUnselectedLabels: false,
         items: const [
-          //   bottomNavigationBar: Container(
-          // decoration: const BoxDecoration(
-          //     borderRadius: BorderRadius.only(
-          //       topLeft: Radius.circular(30.0),
-          //       topRight: Radius.circular(30.0),
-          //     ),
-          //     // ignore: prefer_const_literals_to_create_immutables
-          //     boxShadow: [
-          //       BoxShadow(color: Colors.grey, spreadRadius: 0, blurRadius: 0.2),
-          //     ]),
-          //  BottomNavigationBar(items: <BottomNavigationBarItem>[
-          //   BottomNavigationBarItem(
-          //     icon: Icon(
-          //       Icons.home_filled,
-          //       color: Colors.red[400],
-          //     ),
-          //     label: '',
-          //   ),
-          //   const BottomNavigationBarItem(
-          //     icon: Icon(Icons.favorite, color: Colors.grey),
-          //     label: '',
-          //   ),
-          //   const BottomNavigationBarItem(
-          //     icon: Icon(Icons.local_mall_outlined, color: Colors.grey),
-          //     label: '',
-          //   ),
-          //   const BottomNavigationBarItem(
-          //     icon: Icon(Icons.person_outlined, color: Colors.grey),
-          //     label: '',
-          //   ),
-          // ]),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.message), label: "Requests"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: ""),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite, color: Colors.grey),
+            label: "",
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.local_mall_outlined), label: ""),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
         ],
         currentIndex: _selectedIndex,
         onTap: (index) {
           setState(() {
             _selectedIndex = index;
-            //     tabController!.index = _selectedIndex;
+            tabController!.index = _selectedIndex;
           });
         },
       ),

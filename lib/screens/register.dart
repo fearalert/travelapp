@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:travelapp/authentication/userauthentication.dart';
+import 'package:travelapp/components/customPasswordTextField.dart';
 import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/controllers/registrationcontroller.dart';
 import 'package:travelapp/screens/login.dart';
-import 'package:travelapp/utils/utils.dart';
 
 class Registration extends StatefulWidget {
   static const id = '/registration';
@@ -22,11 +23,10 @@ class _RegistrationState extends State<Registration> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    bool isObscure = true;
-    IconData eyeIcon = Icons.visibility_off;
+
     final nameField = TextFormField(
         autofocus: false,
-        controller: registrationController.emailController,
+        controller: registrationController.nameController,
         keyboardType: TextInputType.emailAddress,
         validator: (value) {
           if (value!.isEmpty) {
@@ -92,7 +92,7 @@ class _RegistrationState extends State<Registration> {
           }
         },
         onSaved: (value) {
-          registrationController.emailController.text = value!;
+          registrationController.phoneController.text = value!;
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -106,51 +106,8 @@ class _RegistrationState extends State<Registration> {
         ));
 
     //password field
-    final passwordField = TextFormField(
-        autofocus: false,
-        controller: registrationController.passwordController,
-        obscureText: isObscure,
-        validator: (value) {
-          Pattern pattern = r'^.{6,}$';
-          RegExp regex = RegExp(pattern as String);
-          if (value!.isEmpty) {
-            return ("Please enter your password.");
-          }
-          if (!regex.hasMatch(value)) {
-            return ' Password must be at least 6 characters.';
-          } else {
-            return null;
-          }
-        },
-        onSaved: (value) {
-          registrationController.passwordController.text = value!;
-        },
-        textInputAction: TextInputAction.done,
-        decoration: InputDecoration(
-          suffixIcon: GestureDetector(
-            onTap: () {
-              setState(() {
-                isObscure = !isObscure;
-                if (isObscure) {
-                  eyeIcon = Icons.visibility_off;
-                } else {
-                  eyeIcon = Icons.visibility;
-                }
-              });
-            },
-            child: Icon(
-              eyeIcon,
-              color: kPrimaryColor,
-            ),
-          ),
-          prefixIcon: const Icon(Icons.vpn_key),
-          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Password",
-          border: OutlineInputBorder(
-            borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ));
+    final passwordField = CustomPasswordTextField(
+        controller: registrationController.passwordController);
 
     return Scaffold(
         backgroundColor: Colors.blueGrey[200],
@@ -221,9 +178,7 @@ class _RegistrationState extends State<Registration> {
                                     shadowColor: MaterialStateProperty.all(
                                         kPrimaryColor),
                                   ),
-                                  onPressed: () {
-                                    _handleRegister();
-                                  },
+                                  onPressed: _handleRegister,
                                   child: Text(
                                     "Register",
                                     style: GoogleFonts.lato(
@@ -278,43 +233,24 @@ class _RegistrationState extends State<Registration> {
   }
 
   Future<void> _handleRegister() async {
-    if (_formKey.currentState!.validate()) {
-      //show snackbar to indicate loading
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Text('Processing Data'),
-        backgroundColor: Colors.green.shade300,
-      ));
-      int phoneNo =
-          int.parse(registrationController.phoneController.text.trim());
-      //get response from ApiClient
-      dynamic res = await userAuthentication.signUp(
-        email: registrationController.emailController.text.trim(),
-        name: registrationController.nameController.text.trim(),
-        phoneNo: phoneNo,
-        password: registrationController.passwordController.text,
-      );
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    final FormState? form = _formKey.currentState;
 
-      // //checks if there is no error in the response body.
-      // //if error is not present, navigate the users to Login Screen.
-      if (res['ErrorCode'] == null) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const LogInScreen()));
-      } else {
-        //if error is present, display a snackbar showing the error messsage
-        getSnackBar(title: 'Error', message: 'Error ${res['Message']}');
-      }
+    if (form!.validate()) {
+      form.save();
+      final userAuthentication = UserAuthentication();
+      userAuthentication.signUp(registrationController.emailController.text,
+          registrationController.passwordController.text);
     }
   }
 }
 
-void getSnackBar({String? title, String? message}) {
+void getSnackBar({String? title, String? message, Color? color}) {
   Get.snackbar(
     title!,
     message!,
-    backgroundColor: Colors.red.shade300,
+    backgroundColor: color,
     colorText: Colors.white,
-    snackPosition: SnackPosition.BOTTOM,
+    snackPosition: SnackPosition.TOP,
     duration: const Duration(seconds: 3),
     borderRadius: 10.0,
   );

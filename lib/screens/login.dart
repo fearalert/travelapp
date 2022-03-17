@@ -1,9 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:travelapp/authentication/userauthentication.dart';
+import 'package:travelapp/components/customPasswordTextField.dart';
 
 import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/controllers/logincontroller.dart';
+import 'package:travelapp/navigationtab/homepage.dart';
+import 'package:travelapp/screens/homescreen.dart';
 import 'package:travelapp/screens/register.dart';
 import 'package:travelapp/utils/utils.dart';
 
@@ -22,8 +28,7 @@ class _LogInScreenState extends State<LogInScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    bool isObscure = true;
-    IconData eyeIcon = Icons.visibility_off;
+
     final emailField = TextFormField(
         autofocus: false,
         controller: logInController.emailController,
@@ -54,52 +59,8 @@ class _LogInScreenState extends State<LogInScreen> {
         ));
 
     //password field
-    final passwordField = TextFormField(
-        autofocus: false,
-        controller: logInController.passwordController,
-        obscureText: isObscure,
-        validator: (value) {
-          Pattern pattern = r'^.{6,}$';
-          RegExp regex = RegExp(pattern as String);
-          if (value!.isEmpty) {
-            return ("Please enter your password.");
-          }
-          if (!regex.hasMatch(value)) {
-            return ' Password must be at least 6 characters.';
-          } else {
-            return null;
-          }
-        },
-        onSaved: (value) {
-          logInController.passwordController.text = value!;
-        },
-        textInputAction: TextInputAction.done,
-        decoration: InputDecoration(
-          suffixIcon: GestureDetector(
-            onTap: () {
-              setState(() {
-                isObscure = !isObscure;
-                if (isObscure) {
-                  eyeIcon = Icons.visibility_off;
-                } else {
-                  eyeIcon = Icons.visibility;
-                }
-              });
-            },
-            child: Icon(
-              eyeIcon,
-              color: kPrimaryColor,
-            ),
-          ),
-          prefixIcon: const Icon(Icons.vpn_key),
-          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Password",
-          border: OutlineInputBorder(
-            borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ));
-
+    final passwordField =
+        CustomPasswordTextField(controller: logInController.passwordController);
     return Scaffold(
         backgroundColor: Colors.blueGrey[200],
         body: Form(
@@ -178,9 +139,7 @@ class _LogInScreenState extends State<LogInScreen> {
                                     shadowColor: MaterialStateProperty.all(
                                         kPrimaryColor),
                                   ),
-                                  onPressed: () {
-                                    handleLogin();
-                                  },
+                                  onPressed: _handleLogin,
                                   child: Text(
                                     "LogIn",
                                     style: GoogleFonts.lato(
@@ -234,29 +193,14 @@ class _LogInScreenState extends State<LogInScreen> {
         ));
   }
 
-  Future<void> handleLogin() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-
-      dynamic res = await userAuthentication.signUp(
-        email: logInController.emailController.text.trim(),
-        password: logInController.passwordController.text,
-      );
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Text('Processing Data.....'),
-        backgroundColor: Colors.green.shade300,
-      ));
-      if (res['ErrorCode'] == null) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const LogInScreen()));
-      } else {
-        //if error is present, display a snackbar showing the error messsage
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error: ${res['Message']}'),
-          backgroundColor: Colors.red.shade300,
-        ));
-      }
+  Future<String?> _handleLogin() async {
+    final FormState? form = _formKey.currentState;
+    if (form!.validate()) {
+      form.save();
+      final userAuthentication = UserAuthentication();
+      userAuthentication.signIn(logInController.emailController.text,
+          logInController.passwordController.text);
     }
+    return null;
   }
 }

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:travelapp/controllers/registrationcontroller.dart';
 import 'package:travelapp/navigationtab/homepage.dart';
 import 'package:travelapp/screens/confirmverification.dart';
+import 'package:travelapp/screens/forgotpassword.dart';
 import 'package:travelapp/screens/login.dart';
 import 'package:travelapp/screens/register.dart';
 import 'package:travelapp/screens/welcome.dart';
@@ -33,6 +34,9 @@ class MyApp extends StatelessWidget {
       // home: Registration(),
       getPages: [
         GetPage(name: WelcomeScreen.id, page: () => const WelcomeScreen()),
+        GetPage(
+            name: ForgotPasswordScreen.id,
+            page: () => const ForgotPasswordScreen()),
         GetPage(name: HomePage.id, page: () => const HomePage()),
         GetPage(
             name: ConfirmEmailVerification.id,

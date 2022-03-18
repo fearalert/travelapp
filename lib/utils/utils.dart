@@ -6,7 +6,7 @@ DatabaseReference serviceRefrence =
     FirebaseDatabase.instance.reference().child('packages');
 
 DatabaseReference adminRefrence =
-    FirebaseDatabase.instance.reference().child('admim');
+    FirebaseDatabase.instance.reference().child('admin');
 
 // final cloudStorage = CloudStorage();
 
@@ -19,17 +19,6 @@ int? userRequestCounter;
 String? newRequestKey;
 
 final userAuthentication = UserAuthentication();
-
-// Database database = Database();
-
-DatabaseReference usersRefrence =
-    FirebaseDatabase.instance.reference().child('users');
-
-DatabaseReference messagesRefrence =
-    FirebaseDatabase.instance.reference().child('messages');
-
-DatabaseReference requestRefrence =
-    FirebaseDatabase.instance.reference().child('requests');
 
 String formatTime({TimeOfDay? unformattedTime}) {
   String time = '';

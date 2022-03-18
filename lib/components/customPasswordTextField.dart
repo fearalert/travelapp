@@ -44,8 +44,10 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
                 isObscure = !isObscure;
                 if (isObscure) {
                   eyeIcon = Icons.visibility_off;
+                  print('iconOff');
                 } else {
                   eyeIcon = Icons.visibility;
+                  print('icon');
                 }
               });
             },

@@ -6,11 +6,6 @@ class LogInController extends GetxController {
   final passwordController = TextEditingController();
 
   @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
   void onClose() {
     super.onClose();
     emailController.dispose();

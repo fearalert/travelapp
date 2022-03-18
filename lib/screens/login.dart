@@ -5,6 +5,7 @@ import 'package:travelapp/authentication/userauthentication.dart';
 import 'package:travelapp/components/customPasswordTextField.dart';
 import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/controllers/logincontroller.dart';
+import 'package:travelapp/screens/forgotpassword.dart';
 import 'package:travelapp/screens/register.dart';
 
 class LogInScreen extends StatefulWidget {
@@ -102,10 +103,16 @@ class _LogInScreenState extends State<LogInScreen> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               GestureDetector(
-                                onTap: () {},
-                                child: Text('Forgot Password?',
-                                    style: GoogleFonts.laila(
-                                        color: Colors.grey, fontSize: 12.0)),
+                                onTap: () {
+                                  Get.toNamed(ForgotPasswordScreen.id);
+                                },
+                                child: Text(
+                                  'Forgot Password?',
+                                  style: GoogleFonts.laila(
+                                    fontSize: 12.0,
+                                    color: Colors.grey,
+                                  ),
+                                ),
                               ),
                               SizedBox(
                                 width: size.width * 0.035,
@@ -190,6 +197,20 @@ class _LogInScreenState extends State<LogInScreen> {
   Future<String?> _handleLogin() async {
     final FormState? form = _formKey.currentState;
     if (form!.validate()) {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            CircularProgressIndicator(
+              color: kPrimaryColor,
+              backgroundColor: Colors.white,
+            ),
+          ],
+        ),
+      );
       form.save();
       final userAuthentication = UserAuthentication();
       userAuthentication.signIn(logInController.emailController.text,

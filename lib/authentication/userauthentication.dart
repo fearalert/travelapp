@@ -21,7 +21,11 @@ class UserAuthentication {
           .signInWithEmailAndPassword(email: email!, password: password!)
           .then((uid) => {
                 print("Login Successful"),
-                getSnackBar(title: "Sucessful", message: 'Login Sucessful'),
+                getSnackBar(
+                  title: "Sucessful",
+                  message: 'Login Sucessful',
+                  color: Colors.green.shade300,
+                ),
                 // Fluttertoast.showToast(msg: "Login Sucessful"),
                 Get.offAllNamed(HomePage.id)
               });
@@ -67,7 +71,7 @@ class UserAuthentication {
       String? code = await _auth
           .createUserWithEmailAndPassword(email: email!, password: password!)
           .then((value) {
-        // sendEmailVerification();
+        sendEmailVerification();
         postDetailsToFirestore();
       });
     } on FirebaseAuthException catch (error) {
@@ -157,6 +161,30 @@ class UserAuthentication {
       await _auth.sendPasswordResetEmail(email: email!);
     } on FirebaseAuthException catch (e) {
       code = e.code;
+      switch (e.code) {
+        case 'user-not-found':
+          getSnackBar(
+            title: "Error!",
+            message: 'user not found.',
+            color: Colors.red.shade300,
+          );
+          break;
+        case 'invalid-email':
+          getSnackBar(
+            title: "Error",
+            message: 'Invalid Email.',
+            color: Colors.red.shade300,
+          );
+          break;
+
+        default:
+          getSnackBar(
+            title: "Error",
+            message: 'Something went wrong.',
+            color: Colors.red.shade300,
+          );
+          print(e.code);
+      }
     }
     return code;
   }

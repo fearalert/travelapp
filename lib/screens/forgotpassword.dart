@@ -2,57 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travelapp/authentication/userauthentication.dart';
-import 'package:travelapp/components/customPasswordTextField.dart';
 import 'package:travelapp/constants/constants.dart';
-import 'package:travelapp/main.dart';
-import 'package:travelapp/screens/confirmverification.dart';
+import 'package:travelapp/controllers/textcontroller.dart';
 import 'package:travelapp/screens/login.dart';
 
-class Registration extends StatefulWidget {
-  static const id = '/registration';
-  const Registration({Key? key}) : super(key: key);
+class ForgotPasswordScreen extends StatefulWidget {
+  static const id = '/forgotpassword';
+  const ForgotPasswordScreen({Key? key}) : super(key: key);
 
   @override
-  State<Registration> createState() => _RegistrationState();
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _RegistrationState extends State<Registration> {
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final textController = Get.put(TextController());
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    final nameField = TextFormField(
-        autofocus: false,
-        controller: registrationController.nameController,
-        keyboardType: TextInputType.emailAddress,
-        validator: (value) {
-          if (value!.isEmpty) {
-            return ("Please enter your username");
-          }
-          if (value.length < 3) {
-            return ("Username is too short");
-          }
-          return null;
-        },
-        onSaved: (value) {
-          registrationController.nameController.text = value!;
-        },
-        textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.person),
-          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Username",
-          border: OutlineInputBorder(
-            borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ));
-
     final emailField = TextFormField(
         autofocus: false,
-        controller: registrationController.emailController,
+        controller: textController.emailController,
         keyboardType: TextInputType.emailAddress,
         validator: (value) {
           if (value!.isEmpty) {
@@ -66,7 +38,7 @@ class _RegistrationState extends State<Registration> {
           return null;
         },
         onSaved: (value) {
-          registrationController.emailController.text = value!;
+          textController.emailController.text = value!;
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -78,35 +50,6 @@ class _RegistrationState extends State<Registration> {
             borderRadius: BorderRadius.circular(10),
           ),
         ));
-
-    final phoneField = TextFormField(
-        autofocus: false,
-        controller: registrationController.phoneController,
-        keyboardType: TextInputType.phone,
-        validator: (value) {
-          if (value!.length != 10) {
-            return 'Phone number is not valid.';
-          } else {
-            return null;
-          }
-        },
-        onSaved: (value) {
-          registrationController.phoneController.text = value!;
-        },
-        textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.phone),
-          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Phone",
-          border: OutlineInputBorder(
-            borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ));
-
-    //password field
-    final passwordField = CustomPasswordTextField(
-        controller: registrationController.passwordController);
 
     return Scaffold(
         backgroundColor: Colors.blueGrey[200],
@@ -135,30 +78,30 @@ class _RegistrationState extends State<Registration> {
                           // SizedBox(height: size.height * 0.08),
                           Center(
                             child: Text(
-                              "Register",
+                              "Reset Password",
                               style: GoogleFonts.laila(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                          SizedBox(height: size.height * 0.06),
-                          nameField,
-                          SizedBox(
-                            height: size.height * 0.030,
+                          SizedBox(height: size.height * 0.05),
+                          Center(
+                            child: Text(
+                              'An email will bet sent to you, Visit the link to change your password.',
+                              style: GoogleFonts.roboto(
+                                color: Colors.black,
+                                fontSize: 12,
+                                letterSpacing: 2.0,
+                                wordSpacing: 2.0,
+                                // fontStyle: FontStyle.italic,
+                              ),
+                            ),
                           ),
+                          SizedBox(height: size.height * 0.045),
+
                           emailField,
-                          SizedBox(
-                            height: size.height * 0.030,
-                          ),
-                          phoneField,
-                          SizedBox(
-                            height: size.height * 0.030,
-                          ),
-                          passwordField,
-                          SizedBox(
-                            height: size.height * 0.04,
-                          ),
+                          SizedBox(height: size.height * 0.025),
 
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -177,9 +120,9 @@ class _RegistrationState extends State<Registration> {
                                     shadowColor: MaterialStateProperty.all(
                                         kPrimaryColor),
                                   ),
-                                  onPressed: _handleRegister,
+                                  onPressed: _handleSubmit,
                                   child: Text(
-                                    "Register",
+                                    "Send Reset Link",
                                     style: GoogleFonts.lato(
                                       color: Colors.white,
                                       fontSize: 20.0,
@@ -198,7 +141,7 @@ class _RegistrationState extends State<Registration> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                'Already have an account?',
+                                'Remember Password?',
                                 style: GoogleFonts.laila(
                                   fontSize: 12.0,
                                 ),
@@ -208,7 +151,7 @@ class _RegistrationState extends State<Registration> {
                                   Get.toNamed(LogInScreen.id);
                                 },
                                 child: Text(
-                                  'LogIn here',
+                                  'Continue to Login',
                                   style: GoogleFonts.laila(
                                     fontSize: 13.0,
                                     color: kPrimaryColor,
@@ -231,43 +174,122 @@ class _RegistrationState extends State<Registration> {
         ));
   }
 
-  Future<void> _handleRegister() async {
+  Future<String?> _handleSubmit() async {
     final FormState? form = _formKey.currentState;
-
     if (form!.validate()) {
-      //show snackbar to indicate loading
       showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) => Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            CircularProgressIndicator(
-              color: kPrimaryColor,
-              backgroundColor: Colors.white,
-            ),
-          ],
-        ),
-      );
-
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                  side: BorderSide.none,
+                  borderRadius: BorderRadius.circular(20.0)),
+              insetAnimationCurve: Curves.bounceIn,
+              backgroundColor: const Color(0xFF110E1F),
+              elevation: 2.0,
+              insetPadding: const EdgeInsets.symmetric(
+                vertical: 25.0,
+                horizontal: 25.0,
+              ),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20.0),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.grey,
+                      offset: Offset(0, 2),
+                      blurRadius: 10.0,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 18.0,
+                        left: 8.0,
+                        right: 8.0,
+                      ),
+                      child: Text(
+                        'Confirm Email',
+                        style: GoogleFonts.laila(
+                          color: Colors.black,
+                          fontSize: 26,
+                          letterSpacing: 2.0,
+                          wordSpacing: 2.0,
+                          fontStyle: FontStyle.normal,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 250.0,
+                      child: Divider(
+                        color: Colors.black38,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 18.0,
+                        left: 20.0,
+                        right: 18.0,
+                        bottom: 18.0,
+                      ),
+                      child: Center(
+                        child: Text(
+                          'If you provided correct email,\nyou must have received password reset link in your maail & visit the link to change your password.',
+                          style: GoogleFonts.lato(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            letterSpacing: 2.0,
+                            wordSpacing: 2.0,
+                            // fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => Get.back(),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 10.0,
+                          horizontal: 20.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xff4f5b8a),
+                          borderRadius: BorderRadius.circular(10.0),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0xff2f3650),
+                              offset: Offset(0, 1),
+                              blurRadius: 4.0,
+                            ),
+                          ],
+                        ),
+                        child: const Text(
+                          'Ok',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
       form.save();
       final userAuthentication = UserAuthentication();
-      userAuthentication.signUp(registrationController.emailController.text,
-          registrationController.passwordController.text);
-      Get.toNamed(ConfirmEmailVerification.id);
+      userAuthentication.passwordReset(
+          email: textController.emailController.text);
     }
+    return null;
   }
-}
-
-void getSnackBar({String? title, String? message, Color? color}) {
-  Get.snackbar(
-    title!,
-    message!,
-    backgroundColor: color,
-    colorText: Colors.white,
-    snackPosition: SnackPosition.TOP,
-    duration: const Duration(seconds: 3),
-    borderRadius: 10.0,
-  );
 }

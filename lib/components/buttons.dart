@@ -1,25 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:travelapp/constants/constants.dart';
 
 class CustomButton extends StatelessWidget {
   final VoidCallback ontap;
   final String text;
-  final Color color;
   final double height;
   final double width;
-  final Color shadowcolor;
-  final Color borderColour;
-  final Color textColour;
+
   const CustomButton({
     Key? key,
     required this.ontap,
     required this.text,
-    required this.color,
     required this.height,
     required this.width,
-    required this.shadowcolor,
-    required this.borderColour,
-    required this.textColour,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -29,12 +23,12 @@ class CustomButton extends StatelessWidget {
           height: height,
           width: width,
           decoration: BoxDecoration(
-              color: color,
+              color: kPrimaryColor,
               borderRadius: const BorderRadius.all(Radius.circular(20)),
-              border: Border.all(color: borderColour),
+              border: Border.all(color: kPrimaryColor),
               boxShadow: [
                 BoxShadow(
-                  color: shadowcolor.withOpacity(0.3),
+                  color: kPrimaryColor.withOpacity(0.3),
                   spreadRadius: 5,
                   blurRadius: 20,
                   offset: const Offset(3, 7), // changes position of shadow
@@ -43,7 +37,7 @@ class CustomButton extends StatelessWidget {
           child: Center(
             child: Text(text,
                 style: GoogleFonts.laila(
-                  color: textColour,
+                  color: Colors.white,
                   fontSize: 22.0,
                   fontWeight: FontWeight.bold,
                 )),

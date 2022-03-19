@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travelapp/model/usermodel.dart';
 import 'package:travelapp/navigationtab/homepage.dart';
-import 'package:travelapp/screens/confirmverification.dart';
-import 'package:travelapp/screens/register.dart';
 import 'package:travelapp/main.dart';
-import 'package:travelapp/utils/utils.dart';
+import 'package:travelapp/widgets/snackbar.dart';
 // user signin authentication
 
 class UserAuthentication {

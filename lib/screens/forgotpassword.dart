@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travelapp/authentication/userauthentication.dart';
 import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/controllers/textcontroller.dart';
 import 'package:travelapp/screens/login.dart';
+import 'package:travelapp/utils/utils.dart';
 
-class ForgotPasswordScreen extends StatefulWidget {
+class ForgotPasswordScreen extends StatelessWidget {
   static const id = '/forgotpassword';
-  const ForgotPasswordScreen({Key? key}) : super(key: key);
+  ForgotPasswordScreen({Key? key}) : super(key: key);
 
-  @override
-  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
-}
-
-class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final textController = Get.put(TextController());
 
@@ -88,13 +83,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           SizedBox(height: size.height * 0.05),
                           Center(
                             child: Text(
-                              'An email will bet sent to you, Visit the link to change your password.',
+                              'An email will be sent to you, Visit the link to change your password.',
                               style: GoogleFonts.roboto(
                                 color: Colors.black,
                                 fontSize: 12,
                                 letterSpacing: 2.0,
                                 wordSpacing: 2.0,
-                                // fontStyle: FontStyle.italic,
                               ),
                             ),
                           ),
@@ -177,116 +171,109 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Future<String?> _handleSubmit() async {
     final FormState? form = _formKey.currentState;
     if (form!.validate()) {
-      showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (context) {
-            return Dialog(
-              shape: RoundedRectangleBorder(
-                  side: BorderSide.none,
-                  borderRadius: BorderRadius.circular(20.0)),
-              insetAnimationCurve: Curves.bounceIn,
-              backgroundColor: const Color(0xFF110E1F),
-              elevation: 2.0,
-              insetPadding: const EdgeInsets.symmetric(
-                vertical: 25.0,
-                horizontal: 25.0,
-              ),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20.0),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.grey,
-                      offset: Offset(0, 2),
-                      blurRadius: 10.0,
-                    ),
-                  ],
+      Get.dialog(Dialog(
+          shape: RoundedRectangleBorder(
+              side: BorderSide.none, borderRadius: BorderRadius.circular(20.0)),
+          insetAnimationCurve: Curves.bounceIn,
+          backgroundColor: const Color(0xFF110E1F),
+          elevation: 2.0,
+          insetPadding: const EdgeInsets.symmetric(
+            vertical: 25.0,
+            horizontal: 25.0,
+          ),
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20.0),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.grey,
+                  offset: Offset(0, 2),
+                  blurRadius: 10.0,
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 18.0,
-                        left: 8.0,
-                        right: 8.0,
-                      ),
-                      child: Text(
-                        'Confirm Email',
-                        style: GoogleFonts.laila(
-                          color: Colors.black,
-                          fontSize: 26,
-                          letterSpacing: 2.0,
-                          wordSpacing: 2.0,
-                          fontStyle: FontStyle.normal,
-                        ),
-                      ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 18.0,
+                    left: 8.0,
+                    right: 8.0,
+                  ),
+                  child: Text(
+                    'Confirm Email',
+                    style: GoogleFonts.laila(
+                      color: Colors.black,
+                      fontSize: 26,
+                      letterSpacing: 2.0,
+                      wordSpacing: 2.0,
+                      fontStyle: FontStyle.normal,
                     ),
-                    const SizedBox(
-                      width: 250.0,
-                      child: Divider(
-                        color: Colors.black38,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 18.0,
-                        left: 20.0,
-                        right: 18.0,
-                        bottom: 18.0,
-                      ),
-                      child: Center(
-                        child: Text(
-                          'If you provided correct email,\nyou must have received password reset link in your maail & visit the link to change your password.',
-                          style: GoogleFonts.lato(
-                            color: Colors.black,
-                            fontSize: 14.0,
-                            letterSpacing: 2.0,
-                            wordSpacing: 2.0,
-                            // fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => Get.back(),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 10.0,
-                          horizontal: 20.0,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xff4f5b8a),
-                          borderRadius: BorderRadius.circular(10.0),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Color(0xff2f3650),
-                              offset: Offset(0, 1),
-                              blurRadius: 4.0,
-                            ),
-                          ],
-                        ),
-                        child: const Text(
-                          'Ok',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            );
-          });
+                const SizedBox(
+                  width: 250.0,
+                  child: Divider(
+                    color: Colors.black38,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 18.0,
+                    left: 20.0,
+                    right: 18.0,
+                    bottom: 18.0,
+                  ),
+                  child: Center(
+                    child: Text(
+                      'If you provided correct email,\nyou must have received password reset link in your maail & visit the link to change your password.',
+                      style: GoogleFonts.lato(
+                        color: Colors.black,
+                        fontSize: 14.0,
+                        letterSpacing: 2.0,
+                        wordSpacing: 2.0,
+                        // fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => Get.back(),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10.0,
+                      horizontal: 20.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xff4f5b8a),
+                      borderRadius: BorderRadius.circular(10.0),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0xff2f3650),
+                          offset: Offset(0, 1),
+                          blurRadius: 4.0,
+                        ),
+                      ],
+                    ),
+                    child: const Text(
+                      'Ok',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+              ],
+            ),
+          )));
+
       form.save();
-      final userAuthentication = UserAuthentication();
       userAuthentication.passwordReset(
           email: textController.emailController.text);
     }

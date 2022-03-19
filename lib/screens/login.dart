@@ -7,16 +7,12 @@ import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/controllers/logincontroller.dart';
 import 'package:travelapp/screens/forgotpassword.dart';
 import 'package:travelapp/screens/register.dart';
+import 'package:travelapp/utils/utils.dart';
 
-class LogInScreen extends StatefulWidget {
+class LogInScreen extends StatelessWidget {
   static const id = '/login';
-  const LogInScreen({Key? key}) : super(key: key);
+  LogInScreen({Key? key}) : super(key: key);
 
-  @override
-  State<LogInScreen> createState() => _LogInScreenState();
-}
-
-class _LogInScreenState extends State<LogInScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final LogInController logInController = LogInController();
 
@@ -197,10 +193,10 @@ class _LogInScreenState extends State<LogInScreen> {
   Future<String?> _handleLogin() async {
     final FormState? form = _formKey.currentState;
     if (form!.validate()) {
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) => Column(
+      form.save();
+
+      Get.dialog(
+        Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
@@ -211,8 +207,6 @@ class _LogInScreenState extends State<LogInScreen> {
           ],
         ),
       );
-      form.save();
-      final userAuthentication = UserAuthentication();
       userAuthentication.signIn(logInController.emailController.text,
           logInController.passwordController.text);
     }

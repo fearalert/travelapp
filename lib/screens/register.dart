@@ -7,16 +7,12 @@ import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/main.dart';
 import 'package:travelapp/screens/confirmverification.dart';
 import 'package:travelapp/screens/login.dart';
+import 'package:travelapp/utils/utils.dart';
 
-class Registration extends StatefulWidget {
+class Registration extends StatelessWidget {
   static const id = '/registration';
-  const Registration({Key? key}) : super(key: key);
+  Registration({Key? key}) : super(key: key);
 
-  @override
-  State<Registration> createState() => _RegistrationState();
-}
-
-class _RegistrationState extends State<Registration> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -236,10 +232,9 @@ class _RegistrationState extends State<Registration> {
 
     if (form!.validate()) {
       //show snackbar to indicate loading
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) => Column(
+
+      Get.dialog(
+        Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
@@ -250,24 +245,10 @@ class _RegistrationState extends State<Registration> {
           ],
         ),
       );
-
       form.save();
-      final userAuthentication = UserAuthentication();
       userAuthentication.signUp(registrationController.emailController.text,
           registrationController.passwordController.text);
       Get.toNamed(ConfirmEmailVerification.id);
     }
   }
-}
-
-void getSnackBar({String? title, String? message, Color? color}) {
-  Get.snackbar(
-    title!,
-    message!,
-    backgroundColor: color,
-    colorText: Colors.white,
-    snackPosition: SnackPosition.TOP,
-    duration: const Duration(seconds: 3),
-    borderRadius: 10.0,
-  );
 }

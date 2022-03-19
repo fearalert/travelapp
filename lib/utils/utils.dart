@@ -8,16 +8,6 @@ DatabaseReference serviceRefrence =
 DatabaseReference adminRefrence =
     FirebaseDatabase.instance.reference().child('admin');
 
-// final cloudStorage = CloudStorage();
-
-//TODO:up
-
-//TODO: probably make another file to store all these resuable accessories
-
-int? userRequestCounter;
-
-String? newRequestKey;
-
 final userAuthentication = UserAuthentication();
 
 String formatTime({TimeOfDay? unformattedTime}) {

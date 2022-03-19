@@ -35,8 +35,7 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: WelcomeScreen.id, page: () => const WelcomeScreen()),
         GetPage(
-            name: ForgotPasswordScreen.id,
-            page: () => const ForgotPasswordScreen()),
+            name: ForgotPasswordScreen.id, page: () => ForgotPasswordScreen()),
         GetPage(name: HomePage.id, page: () => const HomePage()),
         GetPage(
             name: ConfirmEmailVerification.id,
@@ -45,12 +44,12 @@ class MyApp extends StatelessWidget {
             curve: Curves.easeIn,
             transition: Transition.upToDown,
             name: LogInScreen.id,
-            page: () => const LogInScreen()),
+            page: () => LogInScreen()),
         GetPage(
             curve: Curves.easeIn,
             transition: Transition.downToUp,
             name: Registration.id,
-            page: () => const Registration()),
+            page: () => Registration()),
       ],
     );
   }

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:travelapp/model/usermodel.dart';
 import 'package:travelapp/navigationtab/homepage.dart';
 import 'package:travelapp/main.dart';
+import 'package:travelapp/navigationtab/profile.dart';
 import 'package:travelapp/widgets/snackbar.dart';
 // user signin authentication
 
@@ -25,7 +26,7 @@ class UserAuthentication {
                   color: Colors.green.shade300,
                 ),
                 // Fluttertoast.showToast(msg: "Login Sucessful"),
-                Get.offAllNamed(HomePage.id)
+                Get.offAllNamed(Profile.id)
               });
     } on FirebaseAuthException catch (error) {
       switch (error.code) {

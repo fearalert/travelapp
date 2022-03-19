@@ -7,6 +7,7 @@ class CustomButton extends StatelessWidget {
   final String text;
   final double height;
   final double width;
+  final Color color;
 
   const CustomButton({
     Key? key,
@@ -14,6 +15,7 @@ class CustomButton extends StatelessWidget {
     required this.text,
     required this.height,
     required this.width,
+    required this.color,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -23,12 +25,12 @@ class CustomButton extends StatelessWidget {
           height: height,
           width: width,
           decoration: BoxDecoration(
-              color: kPrimaryColor,
+              color: color,
               borderRadius: const BorderRadius.all(Radius.circular(20)),
               border: Border.all(color: kPrimaryColor),
               boxShadow: [
                 BoxShadow(
-                  color: kPrimaryColor.withOpacity(0.3),
+                  color: color.withOpacity(0.3),
                   spreadRadius: 5,
                   blurRadius: 20,
                   offset: const Offset(3, 7), // changes position of shadow
@@ -38,7 +40,7 @@ class CustomButton extends StatelessWidget {
             child: Text(text,
                 style: GoogleFonts.laila(
                   color: Colors.white,
-                  fontSize: 22.0,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                 )),
           ),

@@ -17,22 +17,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  User? user = FirebaseAuth.instance.currentUser;
-  UserModel loggedInUser = UserModel();
-
-  @override
-  void initState() {
-    super.initState();
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(user!.uid)
-        .get()
-        .then((value) {
-      loggedInUser = UserModel.fromMap(value.data());
-      setState(() {});
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final searchController = TextEditingController();
@@ -98,11 +82,9 @@ class _HomePageState extends State<HomePage> {
                 height: 20,
               ),
               CustomTextField(
-                labelText: "Search",
                 icon: Icons.search,
                 hintText: "Type to Search",
                 textController: searchController,
-                obsecure: false,
               ),
               const SizedBox(
                 height: 15,
@@ -275,7 +257,6 @@ class CategoryUserImage extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 20.0),
       child: CircleAvatar(
           // backgroundColor: Colors.red[200],
-          // backgroundImage: AssetImage('assets/images/abdul.jpg'),
           ),
     );
   }

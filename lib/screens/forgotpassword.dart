@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:travelapp/components/customTextField.dart';
 import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/controllers/textcontroller.dart';
 import 'package:travelapp/screens/login.dart';
@@ -17,34 +18,9 @@ class ForgotPasswordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    final emailField = TextFormField(
-        autofocus: false,
-        controller: textController.emailController,
-        keyboardType: TextInputType.emailAddress,
-        validator: (value) {
-          if (value!.isEmpty) {
-            return ("Please Enter Your Email");
-          }
-          // reg expression for email validation
-          if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-              .hasMatch(value)) {
-            return ("Please Enter a valid email");
-          }
-          return null;
-        },
-        onSaved: (value) {
-          textController.emailController.text = value!;
-        },
-        textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.mail),
-          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Email",
-          border: OutlineInputBorder(
-            borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ));
+    final emailField = EmailTextField(
+      textController: textController.emailController,
+    );
 
     return Scaffold(
         backgroundColor: Colors.blueGrey[200],

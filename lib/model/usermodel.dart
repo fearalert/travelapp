@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class UserModel {
   String? uid;
   String? email;
@@ -29,5 +31,9 @@ class UserModel {
       'name': name,
       'phoneNo': phoneNo,
     };
+  }
+
+  userDataStream() {
+    return FirebaseFirestore.instance.collection('users').snapshots();
   }
 }

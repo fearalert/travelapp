@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travelapp/authentication/userauthentication.dart';
 import 'package:travelapp/components/customPasswordTextField.dart';
+import 'package:travelapp/components/customTextField.dart';
 import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/main.dart';
 import 'package:travelapp/screens/confirmverification.dart';
@@ -19,86 +19,13 @@ class Registration extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    final nameField = TextFormField(
-        autofocus: false,
-        controller: registrationController.nameController,
-        keyboardType: TextInputType.emailAddress,
-        validator: (value) {
-          if (value!.isEmpty) {
-            return ("Please enter your username");
-          }
-          if (value.length < 3) {
-            return ("Username is too short");
-          }
-          return null;
-        },
-        onSaved: (value) {
-          registrationController.nameController.text = value!;
-        },
-        textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.person),
-          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Username",
-          border: OutlineInputBorder(
-            borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ));
+    final nameField =
+        NameTextField(nameController: registrationController.nameController);
+    final emailField =
+        EmailTextField(textController: registrationController.emailController);
 
-    final emailField = TextFormField(
-        autofocus: false,
-        controller: registrationController.emailController,
-        keyboardType: TextInputType.emailAddress,
-        validator: (value) {
-          if (value!.isEmpty) {
-            return ("Please Enter Your Email");
-          }
-          // reg expression for email validation
-          if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-              .hasMatch(value)) {
-            return ("Please Enter a valid email");
-          }
-          return null;
-        },
-        onSaved: (value) {
-          registrationController.emailController.text = value!;
-        },
-        textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.mail),
-          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Email",
-          border: OutlineInputBorder(
-            borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ));
-
-    final phoneField = TextFormField(
-        autofocus: false,
-        controller: registrationController.phoneController,
-        keyboardType: TextInputType.phone,
-        validator: (value) {
-          if (value!.length != 10) {
-            return 'Phone number is not valid.';
-          } else {
-            return null;
-          }
-        },
-        onSaved: (value) {
-          registrationController.phoneController.text = value!;
-        },
-        textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.phone),
-          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Phone",
-          border: OutlineInputBorder(
-            borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ));
+    final phoneField =
+        PhoneTextField(textController: registrationController.phoneController);
 
     //password field
     final passwordField = CustomPasswordTextField(

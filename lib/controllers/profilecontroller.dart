@@ -1,19 +1,20 @@
 import 'package:get/get.dart';
+import 'package:travelapp/model/database.dart';
 import 'package:travelapp/model/usermodel.dart';
 
 class ProfileController extends GetxController {
   var profileData = RxList<UserModel>([]);
 
-  List<UserModel> get user => profileData;
+  List<UserModel> get profile => profileData;
 
   @override
   void onInit() {
     super.onInit();
-    profileData.bindStream(UserModel().userDataStream());
+    (Database().getCurrentUserData());
   }
 
   @override
-  void onClose() {
+  Future<void> onClose() async {
     super.onClose();
   }
 }

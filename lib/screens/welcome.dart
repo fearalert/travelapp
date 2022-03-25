@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:splash_screen_view/SplashScreenView.dart';
 import 'package:travelapp/constants/constants.dart';
-import 'package:travelapp/navigationtab/homepage.dart';
 import 'package:travelapp/screens/register.dart';
 
 class WelcomeScreen extends StatelessWidget {

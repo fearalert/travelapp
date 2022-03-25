@@ -5,7 +5,6 @@ import 'package:travelapp/components/customPasswordTextField.dart';
 import 'package:travelapp/components/customTextField.dart';
 import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/main.dart';
-import 'package:travelapp/screens/confirmverification.dart';
 import 'package:travelapp/screens/login.dart';
 import 'package:travelapp/utils/utils.dart';
 
@@ -158,8 +157,6 @@ class Registration extends StatelessWidget {
     final FormState? form = _formKey.currentState;
 
     if (form!.validate()) {
-      //show snackbar to indicate loading
-
       Get.dialog(
         Column(
           mainAxisSize: MainAxisSize.min,
@@ -175,7 +172,6 @@ class Registration extends StatelessWidget {
       form.save();
       userAuthentication.signUp(registrationController.emailController.text,
           registrationController.passwordController.text);
-      Get.toNamed(ConfirmEmailVerification.id);
     }
   }
 }

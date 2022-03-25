@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/navigationtab/homepage.dart';
-import 'package:travelapp/screens/register.dart';
 import 'package:travelapp/utils/utils.dart';
 import 'package:travelapp/widgets/snackbar.dart';
 

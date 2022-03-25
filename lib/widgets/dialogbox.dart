@@ -3,7 +3,7 @@ import 'package:travelapp/constants/constants.dart';
 
 class DialogBox extends StatelessWidget {
   final String title;
-  const DialogBox({required this.title});
+  const DialogBox({Key? key, required this.title}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Dialog(

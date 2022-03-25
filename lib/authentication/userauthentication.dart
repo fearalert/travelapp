@@ -2,21 +2,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travelapp/model/usermodel.dart';
-import 'package:travelapp/navigationtab/homepage.dart';
 import 'package:travelapp/main.dart';
-import 'package:travelapp/navigationtab/profile.dart';
+import 'package:travelapp/navigationtab/homepage.dart';
+import 'package:travelapp/screens/confirmverification.dart';
 import 'package:travelapp/widgets/snackbar.dart';
+
 // user signin authentication
+final FirebaseAuth _auth = FirebaseAuth.instance;
+
+User? get currentUser => _auth.currentUser;
 
 class UserAuthentication {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  User? get currentUser => _auth.currentUser;
-
   Future<String?> signIn(String? email, String? password) async {
     try {
-      final firebaseUser = await _auth
+      await _auth
           .signInWithEmailAndPassword(email: email!, password: password!)
           .then((uid) => {
                 print("Login Successful"),
@@ -26,7 +27,7 @@ class UserAuthentication {
                   color: Colors.green.shade300,
                 ),
                 // Fluttertoast.showToast(msg: "Login Sucessful"),
-                Get.offAllNamed(Profile.id)
+                Get.offAllNamed(HomePage.id)
               });
     } on FirebaseAuthException catch (error) {
       switch (error.code) {
@@ -69,10 +70,11 @@ class UserAuthentication {
     try {
       String? code = await _auth
           .createUserWithEmailAndPassword(email: email!, password: password!)
-          .then((value) {
+          .then((value) => postDetailsToFirestore());
+      if (code == 'success') {
         sendEmailVerification();
-        postDetailsToFirestore();
-      });
+        Get.toNamed(ConfirmEmailVerification.id);
+      }
     } on FirebaseAuthException catch (error) {
       switch (error.code) {
         case 'email-already-in-use':
@@ -188,7 +190,40 @@ class UserAuthentication {
     return code;
   }
 
+// Google SignIn Auth
+  Future<User?> signInWithGoogle() async {
+    try {
+      // trigger the authentication dialog display google accounts
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser != null) {
+        // Obtain the auth detail from the request
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+
+        // Create A New credential
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        // Once the SignIn return the user data from the firebase
+        UserCredential userCredential =
+            await _auth.signInWithCredential(credential);
+        return userCredential.user;
+      }
+    } catch (error) {
+      getSnackBar(
+        title: "Error",
+        message: 'Something went wrong.',
+        color: Colors.red.shade300,
+      );
+      Text(error.toString());
+    }
+    return null;
+  }
+
   Future<void> logOut() async {
+    await GoogleSignIn().signOut();
     await _auth.signOut();
   }
 

@@ -6,14 +6,12 @@ class CustomTextField extends StatelessWidget {
   final String hintText;
   final IconData icon;
 
-  CustomTextField({
+  const CustomTextField({
     Key? key,
     required this.textController,
     required this.hintText,
     required this.icon,
   }) : super(key: key);
-
-  Color focuscolor = const Color.fromARGB(255, 159, 160, 161);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +31,7 @@ class CustomTextField extends StatelessWidget {
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.mail),
+          prefixIcon: Icon(icon),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: hintText,
           border: OutlineInputBorder(

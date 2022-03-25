@@ -1,22 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 import 'package:travelapp/components/customTextField.dart';
 import 'package:travelapp/constants/constants.dart';
-import 'package:travelapp/model/usermodel.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   static const id = '/homePage';
   const HomePage({Key? key}) : super(key: key);
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final searchController = TextEditingController();
@@ -72,7 +63,6 @@ class _HomePageState extends State<HomePage> {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                // ignore: prefer_const_literals_to_create_immutables
                 children: const [
                   CategoryPageHeader(),
                   CategoryUserImage(),

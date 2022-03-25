@@ -4,7 +4,6 @@ import 'package:travelapp/components/buttons.dart';
 import 'package:travelapp/components/customTextField.dart';
 import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/main.dart';
-import 'package:travelapp/utils/utils.dart';
 
 class Profile extends StatelessWidget {
   static const id = '/profile';

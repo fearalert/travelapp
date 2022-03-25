@@ -37,6 +37,7 @@ class MyApp extends StatelessWidget {
       // home: Registration(),
       getPages: [
         GetPage(name: WelcomeScreen.id, page: () => const WelcomeScreen()),
+        GetPage(name: EnterPhoneNumber.id, page: () => EnterPhoneNumber()),
         GetPage(name: Profile.id, page: () => const Profile()),
         GetPage(
             name: ForgotPasswordScreen.id, page: () => ForgotPasswordScreen()),

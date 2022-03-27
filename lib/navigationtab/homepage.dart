@@ -77,6 +77,7 @@ class HomePage extends StatelessWidget {
                 icon: Icons.search,
                 hintText: "Type to Search",
                 textController: searchController,
+                isNumber: false,
               ),
               const SizedBox(
                 height: 15,

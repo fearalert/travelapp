@@ -468,19 +468,23 @@ class Profile extends StatelessWidget {
                                           padding:
                                               const EdgeInsets.only(top: 8.0),
                                           child: CustomTextField(
-                                              hintText: 'Username',
-                                              icon: Icons.person,
-                                              textController: textController
-                                                  .nameController),
+                                            hintText: 'Username',
+                                            icon: Icons.person,
+                                            textController:
+                                                textController.nameController,
+                                            isNumber: false,
+                                          ),
                                         ),
                                         SizedBox(
                                           height: size.height * 0.02,
                                         ),
                                         CustomTextField(
-                                            hintText: 'Phone Number',
-                                            icon: Icons.phone,
-                                            textController:
-                                                textController.emailController),
+                                          hintText: 'Phone Number',
+                                          icon: Icons.phone,
+                                          textController:
+                                              textController.emailController,
+                                          isNumber: false,
+                                        ),
                                       ],
                                     ),
                                   ),

@@ -5,12 +5,14 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController textController;
   final String hintText;
   final IconData icon;
+  final bool isNumber;
 
   const CustomTextField({
     Key? key,
     required this.textController,
     required this.hintText,
     required this.icon,
+    required this.isNumber,
   }) : super(key: key);
 
   @override
@@ -19,7 +21,7 @@ class CustomTextField extends StatelessWidget {
         autofocus: false,
         obscureText: false,
         controller: textController,
-        keyboardType: TextInputType.text,
+        keyboardType: isNumber ? TextInputType.phone : TextInputType.text,
         validator: (value) {
           if (value!.isEmpty) {
             return ("Please enter text");

@@ -423,7 +423,7 @@ class Profile extends StatelessWidget {
                           ),
                         ),
                         // backgroundColor: Color(0xFF0E0E0F),
-                        backgroundColor: const Color(0xFF1D1E20),
+                        backgroundColor: kTextfieldColor,
                         context: context,
                         builder: (context) {
                           return Column(
@@ -437,7 +437,7 @@ class Profile extends StatelessWidget {
                                     child: Text(
                                       'Edit Info',
                                       style: GoogleFonts.shortStack(
-                                        color: kTextfieldColor,
+                                        color: Colors.black,
                                         fontSize: 24.0,
                                       ),
                                     ),
@@ -468,17 +468,17 @@ class Profile extends StatelessWidget {
                                           padding:
                                               const EdgeInsets.only(top: 8.0),
                                           child: CustomTextField(
-                                              hintText: 'Update Username',
+                                              hintText: 'Username',
                                               icon: Icons.person,
                                               textController: textController
-                                                  .emailController),
+                                                  .nameController),
                                         ),
                                         SizedBox(
                                           height: size.height * 0.02,
                                         ),
                                         CustomTextField(
-                                            hintText: 'Update Username',
-                                            icon: Icons.person,
+                                            hintText: 'Phone Number',
+                                            icon: Icons.phone,
                                             textController:
                                                 textController.emailController),
                                       ],
@@ -487,25 +487,36 @@ class Profile extends StatelessWidget {
                                 ),
                               ),
                               Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Expanded(
-                                    child: CustomButton(
-                                      ontap: () {
-                                        textController.emailController.clear();
-                                        textController.emailController.clear();
-                                        Get.back();
-                                      },
-                                      color: Colors.black,
-                                      height: 55.0,
-                                      text: 'Text',
-                                      width: 200.0,
-                                    ),
+                                  CustomButton(
+                                    ontap: () {
+                                      textController.emailController.clear();
+                                      textController.emailController.clear();
+                                      Get.back();
+                                    },
+                                    color: kPrimaryColor,
+                                    height: 55.0,
+                                    text: 'Cancel',
+                                    width: 160.0,
+                                  ),
+                                  CustomButton(
+                                    ontap: () {
+                                      textController.emailController.clear();
+                                      textController.emailController.clear();
+                                      Get.back();
+                                    },
+                                    color: kPrimaryColor,
+                                    height: 55.0,
+                                    text: 'Save Changes',
+                                    width: 160.0,
                                   ),
                                 ],
                               ),
-                              // SizedBox(
-                              //   height: size.height * 0.02,
-                              // ),
+                              SizedBox(
+                                height: size.height * 0.02,
+                              ),
                             ],
                           );
                         },

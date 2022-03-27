@@ -8,8 +8,9 @@ DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
 DatabaseReference usersReference = databaseReference.child('users');
 
 class Database {
+  final firebaseUser = user;
+
   Future getCurrentUserData() async {
-    final firebaseUser = user;
     FirebaseFirestore.instance
         .collection("users")
         .doc(firebaseUser!.uid)
@@ -19,16 +20,13 @@ class Database {
     });
   }
 
-  Stream<List<UserModel>> userDataStream() {
-    return usersReference
-        .child(userAuthentication.userID!)
-        .onValue
-        .map((Event event) {
-      List<UserModel> userData = [];
-      userData.add(UserModel.fromMap(event.snapshot.value));
-      return userData;
-    });
-  }
+  // Stream<List<UserModel>> userDataStream() {
+  //   return usersReference.child(firebaseUser!.uid).onValue.map((Event event) {
+  //     List<UserModel> userData = [];
+  //     userData.add(UserModel.fromMap(event.snapshot.value));
+  //     return userData;
+  //   });
+  // }
 }
 
 Database database = Database();

@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:travelapp/model/database.dart';
 import 'package:travelapp/model/usermodel.dart';
 
 class ProfileController extends GetxController {
@@ -10,7 +9,7 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    (Database().userDataStream());
+    // (Database().userDataStream());
   }
 
   @override

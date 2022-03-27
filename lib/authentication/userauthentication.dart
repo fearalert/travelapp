@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travelapp/model/usermodel.dart';
 import 'package:travelapp/main.dart';
-import 'package:travelapp/navigationtab/homepage.dart';
 import 'package:travelapp/screens/confirmverification.dart';
 import 'package:travelapp/widgets/snackbar.dart';
 import '../screens/homescreen.dart';
@@ -14,12 +13,13 @@ import '../screens/homescreen.dart';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 User? get currentUser => _auth.currentUser;
+User? user = FirebaseAuth.instance.currentUser;
 
 class UserAuthentication {
-  String? get userID {
-    User? user = currentUser!;
-    return user.uid;
-  }
+  // String? get userID {
+  //   User? user = currentUser!;
+  //   return user.uid;
+  // }
 
   Future signIn(String? email, String? password) async {
     try {
@@ -236,17 +236,16 @@ class UserAuthentication {
 
   postDetailsToFirestore() async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    User? user = currentUser;
 
     UserModel userModel = UserModel();
 
     userModel.email = user!.email;
-    userModel.id = user.uid;
+    userModel.id = user!.uid;
     userModel.name = registrationController.nameController.text;
     userModel.phoneNo = int.parse(registrationController.phoneController.text);
     await firebaseFirestore
         .collection("users")
-        .doc(user.uid)
+        .doc(user!.uid)
         .set(userModel.toMap());
     getSnackBar(
       title: "Congratulations",

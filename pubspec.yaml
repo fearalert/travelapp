@@ -45,6 +45,9 @@ dependencies:
   firebase_messaging: ^10.0.3
   google_sign_in: ^5.2.4
   font_awesome_flutter: ^10.0.0
+  flutter_rating_stars: ^1.0.3+4
+  image_picker: ^0.8.4+11
+  firebase_storage: ^10.2.9
 
 
 dev_dependencies:

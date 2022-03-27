@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 import 'package:travelapp/components/customTextField.dart';
 import 'package:travelapp/constants/constants.dart';
+import 'package:travelapp/widgets/packages.dart';
 
 class HomePage extends StatelessWidget {
   static const id = '/homePage';
@@ -155,11 +157,15 @@ class HomePage extends StatelessWidget {
                                 style: ElevatedButton.styleFrom(
                                     primary: Colors.white,
                                     shape: const StadiumBorder()),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Get.off(
+                                    const PackageDetail(),
+                                  );
+                                },
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 2),
                                   child: Text(
-                                    '\$${prices[index]}',
+                                    '\Rs${prices[index]}',
                                     style: const TextStyle(color: Colors.black),
                                   ),
                                 ),
@@ -178,47 +184,47 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30.0),
-              topRight: Radius.circular(30.0),
-            ),
-            // ignore: prefer_const_literals_to_create_immutables
-            boxShadow: [
-              BoxShadow(color: Colors.grey, spreadRadius: 0, blurRadius: 0.2),
-            ]),
-        child: BottomNavigationBar(items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home_filled,
-              color: kPrimaryColor,
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite, color: Colors.grey),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_mall_outlined, color: Colors.grey),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outlined, color: Colors.grey),
-            label: '',
-          ),
-        ]),
+      // bottomNavigationBar: Container(
+      //   decoration: const BoxDecoration(
+      //       borderRadius: BorderRadius.only(
+      //         topLeft: Radius.circular(30.0),
+      //         topRight: Radius.circular(30.0),
+      //       ),
+      //       // ignore: prefer_const_literals_to_create_immutables
+      //       boxShadow: [
+      //         BoxShadow(color: Colors.grey, spreadRadius: 0, blurRadius: 0.2),
+      //       ]),
+      //   child: BottomNavigationBar(items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         Icons.home_filled,
+      //         color: kPrimaryColor,
+      //       ),
+      //       label: '',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.favorite, color: Colors.grey),
+      //       label: '',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.local_mall_outlined, color: Colors.grey),
+      //       label: '',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.person_outlined, color: Colors.grey),
+      //       label: '',
+      //     ),
+      //   ]),
 
-        // )
-        // child: ClipRRect(
-        //   borderRadius: const BorderRadius.only(
-        //     topLeft: Radius.circular(30.0),
-        //     topRight: Radius.circular(30.0),
-        //   ),
+      //   // )
+      // child: ClipRRect(
+      //   borderRadius: const BorderRadius.only(
+      //     topLeft: Radius.circular(30.0),
+      //     topRight: Radius.circular(30.0),
+      //   ),
 
-        // ),
-      ),
+      // ),
+      // ),
     );
   }
 }

@@ -157,7 +157,6 @@ class LogInScreen extends StatelessWidget {
                               ),
                               onPressed: () {
                                 userAuthentication.signInWithGoogle();
-                                Get.toNamed(HomePage.id);
                               },
                               label: Text(
                                 'Continue with google',

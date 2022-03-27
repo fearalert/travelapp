@@ -8,6 +8,7 @@ import 'package:travelapp/main.dart';
 import 'package:travelapp/navigationtab/homepage.dart';
 import 'package:travelapp/screens/confirmverification.dart';
 import 'package:travelapp/widgets/snackbar.dart';
+import '../screens/homescreen.dart';
 
 // user signin authentication
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -15,20 +16,25 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 User? get currentUser => _auth.currentUser;
 
 class UserAuthentication {
-  Future<String?> signIn(String? email, String? password) async {
+  String? get userID {
+    User? user = currentUser!;
+    return user.uid;
+  }
+
+  Future signIn(String? email, String? password) async {
     try {
       await _auth
           .signInWithEmailAndPassword(email: email!, password: password!)
-          .then((uid) => {
-                print("Login Successful"),
-                getSnackBar(
-                  title: "Sucessful",
-                  message: 'Login Sucessful',
-                  color: Colors.green.shade300,
-                ),
-                // Fluttertoast.showToast(msg: "Login Sucessful"),
-                Get.offAllNamed(HomePage.id)
-              });
+          .then((uid) {
+        print("Login Successful");
+        getSnackBar(
+          title: "Sucessful",
+          message: 'Login Sucessful',
+          color: Colors.green.shade300,
+        );
+        // Fluttertoast.showToast(msg: "Login Sucessful"),
+        Get.offAllNamed(MainScreen.id);
+      });
     } on FirebaseAuthException catch (error) {
       switch (error.code) {
         case 'user-not-found':
@@ -59,22 +65,22 @@ class UserAuthentication {
             color: Colors.red.shade300,
           );
           print(error.code);
+          return error.code;
       }
       // Fluttertoast.showToast(
       //     msg: "Either password is incorrect\n or the account does not exist.");
     }
-    return null;
   }
 
-  Future<String?> signUp(String? email, String? password) async {
+  Future signUp(String? email, String? password) async {
     try {
-      String? code = await _auth
+      await _auth
           .createUserWithEmailAndPassword(email: email!, password: password!)
-          .then((value) => postDetailsToFirestore());
-      if (code == 'success') {
+          .then((value) {
+        postDetailsToFirestore();
         sendEmailVerification();
-        Get.toNamed(ConfirmEmailVerification.id);
-      }
+      });
+      Get.toNamed(ConfirmEmailVerification.id);
     } on FirebaseAuthException catch (error) {
       switch (error.code) {
         case 'email-already-in-use':
@@ -105,14 +111,13 @@ class UserAuthentication {
             color: Colors.red.shade300,
           );
           print(error.code);
+        // return error.code;
       }
-      // print(error);
       // Fluttertoast.showToast(msg: 'Error in SignUp. Please try again.');
     }
-    return null;
   }
 
-  Future<bool?> isEmailVerified() async {
+  Future isEmailVerified() async {
     User? user = currentUser;
     await user?.reload();
     if (user!.emailVerified) {
@@ -127,7 +132,7 @@ class UserAuthentication {
     return await user?.reload();
   }
 
-  Future<String?> sendEmailVerification({String? email}) async {
+  Future sendEmailVerification({String? email}) async {
     User? user = currentUser;
     String? code;
     try {
@@ -156,7 +161,7 @@ class UserAuthentication {
     return code;
   }
 
-  Future<String?> passwordReset({required String? email}) async {
+  Future passwordReset({required String? email}) async {
     String? code;
     try {
       await _auth.sendPasswordResetEmail(email: email!);
@@ -209,6 +214,8 @@ class UserAuthentication {
         // Once the SignIn return the user data from the firebase
         UserCredential userCredential =
             await _auth.signInWithCredential(credential);
+        Get.toNamed(MainScreen.id);
+
         return userCredential.user;
       }
     } catch (error) {
@@ -234,9 +241,9 @@ class UserAuthentication {
     UserModel userModel = UserModel();
 
     userModel.email = user!.email;
-    userModel.uid = user.uid;
+    userModel.id = user.uid;
     userModel.name = registrationController.nameController.text;
-    userModel.phoneNo = registrationController.phoneController.text;
+    userModel.phoneNo = int.parse(registrationController.phoneController.text);
     await firebaseFirestore
         .collection("users")
         .doc(user.uid)

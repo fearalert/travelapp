@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:splash_screen_view/SplashScreenView.dart';
 import 'package:travelapp/constants/constants.dart';
-import 'package:travelapp/screens/register.dart';
+import 'package:travelapp/screens/homescreen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   static const String id = '/welcome';
@@ -16,7 +16,7 @@ class WelcomeScreen extends StatelessWidget {
       // navigateRoute: userAuthentication.currentUser == null
       //     ? Registration()
       //     : const HomePage(),
-      navigateRoute: Registration(),
+      navigateRoute: const MainScreen(),
       duration: 3000,
       text: 'Tours & Travels',
       textStyle: GoogleFonts.arizonia(

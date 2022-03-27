@@ -1,33 +1,37 @@
 class UserModel {
-  String? uid;
+  String? id;
   String? email;
   String? name;
-  String? phoneNo;
+  int? phoneNo;
+  String? profileUrl;
 
   UserModel({
-    this.uid,
+    this.id,
     this.email,
     this.name,
     this.phoneNo,
+    this.profileUrl,
   });
 
 // data from server
   factory UserModel.fromMap(map) {
     return UserModel(
-      uid: map['uid'],
+      id: map['id'],
       email: map['email'],
       name: map['name'],
       phoneNo: map['phoneNo'],
+      profileUrl: map['profileUrl'],
     );
   }
 
 // sending data to our server
   Map<String, dynamic> toMap() {
     return {
-      'uid': uid,
+      'id': id,
       'email': email,
       'name': name,
       'phoneNo': phoneNo,
+      'profileUrl': profileUrl,
     };
   }
 }

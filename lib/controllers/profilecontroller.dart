@@ -10,7 +10,7 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    (Database().getCurrentUserData());
+    (Database().userDataStream());
   }
 
   @override

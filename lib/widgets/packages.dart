@@ -177,7 +177,7 @@ _bottomSheet(context) {
   showModalBottomSheet(
       context: context,
       builder: (BuildContext c) {
-        return Expanded(
+        return Container(
           child: Column(children: [
             ElevatedButton(
                 onPressed: () {},

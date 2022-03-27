@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -16,16 +15,16 @@ final userAuthentication = UserAuthentication();
 User? user = FirebaseAuth.instance.currentUser;
 UserModel loggedInUser = UserModel();
 
-@override
-void initState() {
-  FirebaseFirestore.instance
-      .collection("users")
-      .doc(user!.uid)
-      .get()
-      .then((value) {
-    loggedInUser = UserModel.fromMap(value.data());
-  });
-}
+// @override
+// void initState() {
+//   FirebaseFirestore.instance
+//       .collection("users")
+//       .doc(user!.uid)
+//       .get()
+//       .then((value) {
+//     loggedInUser = UserModel.fromMap(value.data());
+//   });
+// }
 
 String formatTime({TimeOfDay? unformattedTime}) {
   String time = '';

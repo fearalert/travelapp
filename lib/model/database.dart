@@ -20,13 +20,16 @@ class Database {
     });
   }
 
-  // Stream<List<UserModel>> userDataStream() {
-  //   return usersReference.child(firebaseUser!.uid).onValue.map((Event event) {
-  //     List<UserModel> userData = [];
-  //     userData.add(UserModel.fromMap(event.snapshot.value));
-  //     return userData;
-  //   });
-  // }
+  Stream<List<UserModel>> userDataStream() {
+    return usersReference
+        .child(userAuthentication.getUid().toString())
+        .onValue
+        .map((Event event) {
+      List<UserModel> userData = [];
+      userData.add(UserModel.fromMap(event.snapshot.value));
+      return userData;
+    });
+  }
 }
 
 Database database = Database();

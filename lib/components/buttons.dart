@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travelapp/constants/constants.dart';
 
 class CustomButton extends StatelessWidget {
   final VoidCallback ontap;
@@ -28,14 +27,15 @@ class CustomButton extends StatelessWidget {
               color: color,
               borderRadius: const BorderRadius.all(Radius.circular(12)),
               // border: Border.all(color: kPrimaryColor),
-              boxShadow: [
-                BoxShadow(
-                  color: color.withOpacity(0.3),
-                  spreadRadius: 5,
-                  blurRadius: 20,
-                  offset: const Offset(3, 7), // changes position of shadow
-                ),
-              ]),
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: color.withOpacity(0.3),
+              //     spreadRadius: 5,
+              //     blurRadius: 20,
+              //     offset: const Offset(3, 7), // changes position of shadow
+              //   ),
+              // ]
+              ),
           child: Center(
             child: Text(text,
                 style: GoogleFonts.laila(

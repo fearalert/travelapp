@@ -1,20 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travelapp/components/buttons.dart';
 import 'package:travelapp/components/customTextField.dart';
 import 'package:travelapp/constants/constants.dart';
+import 'package:travelapp/model/database.dart';
+import 'package:travelapp/navigationtab/homepage.dart';
+import 'package:travelapp/screens/homescreen.dart';
+import 'package:travelapp/utils/utils.dart';
+import 'package:travelapp/widgets/snackbar.dart';
 
 class PackageDetail extends StatefulWidget {
-  const PackageDetail({Key? key}) : super(key: key);
+
+  final Map<String, dynamic> receivedMap;
+   PackageDetail({Key? key,required this.receivedMap}) ;
+
+  
 
   @override
   State<PackageDetail> createState() => _PackageDetailState();
 }
 
 class _PackageDetailState extends State<PackageDetail> {
+
+   
   final _descriptionController = TextEditingController();
-  final adultController = TextEditingController();
+  final peopleController = TextEditingController();
   DateTime? _pickedDate;
   TimeOfDay? _selectedTime;
 
@@ -36,6 +48,15 @@ class _PackageDetailState extends State<PackageDetail> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+
+        leading: IconButton(
+        onPressed: (){
+         Get.back();
+         Get.toNamed(MainScreen.id);
+        },
+        icon: const Icon(Icons.arrow_back,color: Colors.black,))),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           // _bottomSheet(context);
@@ -49,38 +70,41 @@ class _PackageDetailState extends State<PackageDetail> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(0),
-                              color: kTextfieldColor),
-                          child: ListTile(
-                            // tileColor: Colors.blue,
-                            title: Text(
-                              "Fill Out Details",
-                              style: GoogleFonts.juliusSansOne(
-                                  fontSize: 15.0,
-                                  letterSpacing: 1.3,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.black),
+                         Container(
+                          //  height:  50,
+                            width: size.width *1 ,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(0),
+                                color: kPrimaryColor),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 18.0, bottom: 8.0),
+                                  child: Text(
+                                      "Fill Out Details",
+                                      style: GoogleFonts.laila(
+                                          fontSize: 16.0,
+                                          letterSpacing: 1.3,
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.white),
+                                    ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ),
+                            ),
+                        
+                        
                       ],
                     ),
-                    const SizedBox(
-                      width: 225.0,
-                      child: Divider(
-                        thickness: 1,
-                        color: kPrimaryColor,
-                      ),
-                    ),
+                
                     SizedBox(
-                      height: size.height * 0.02,
+                      height: size.height * 0.05,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CustomTextField(
-                        textController: adultController,
+                        textController: peopleController,
                         hintText: 'Enter no of peoples',
                         icon: Icons.person,
                         isNumber: true,
@@ -135,10 +159,19 @@ class _PackageDetailState extends State<PackageDetail> {
                       ),
                     ),
                     Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.only(top: 18.0),
                         child: CustomButton(
-                            ontap: () {},
-                            text: 'text',
+                            ontap: ()async {
+                             await database.requestPackage(
+                                _pickedDate, int.parse(peopleController.text), '1234', user!.uid.toString(), '${widget.receivedMap['placeName']}'
+                              );
+                              Get.back();
+                              getSnackBar(title: 'Successful', message: 'Your request has been successfully placed', color: Colors.green.shade300);
+                          
+                              
+
+                            },
+                            text: 'Submit',
                             height: 55.0,
                             width: 160.0,
                             color: kPrimaryColor)),
@@ -169,7 +202,7 @@ class _PackageDetailState extends State<PackageDetail> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10.0),
                       child: Image.network(
-                        "https://th.bing.com/th/id/OIP.dDOhUNRfRwEjkwp0O8ItawHaF1?pid=ImgDet&rs=1",
+                        '${widget.receivedMap['imgUrl']}',
                         height: 250.0,
                         width: MediaQuery.of(context).size.width - 40.0,
                         fit: BoxFit.cover,
@@ -220,7 +253,7 @@ class _PackageDetailState extends State<PackageDetail> {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Pokhara Nepal",
+                        '${widget.receivedMap['placeName']}',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 13,
@@ -236,7 +269,7 @@ class _PackageDetailState extends State<PackageDetail> {
                 Container(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Rs. 1000",
+                    '${widget.receivedMap['price']}',
                     style: GoogleFonts.abel(
                         fontWeight: FontWeight.bold,
                         fontSize: 25,
@@ -268,28 +301,16 @@ class _PackageDetailState extends State<PackageDetail> {
                 Container(
                   alignment: Alignment.centerLeft,
                   child: Column(
-                    children: const [
+                    children:  [
                       Text(
-                        "Pellentesque in ipsum id orci porta dapibus. "
-                        "Nulla porttitor accumsan tincidunt. Donec rutrum "
-                        "congue leo eget malesuada. "
-                        "\n\nPraesent sapien massa, convallis a pellentesque "
-                        "nec, egestas non nisi. Donec rutrum congue leo eget malesuada. "
-                        "Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. "
-                        "Sed porttitor lectus nibh. Donec sollicitudin molestie malesuada. "
-                        "\nCurabitur arcu erat, accumsan id imperdiet et, porttitor at sem. "
-                        "Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui."
-                        "Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. "
-                        "Sed porttitor lectus nibh. Donec sollicitudin molestie malesuada. "
-                        "\nCurabitur arcu erat, accumsan id imperdiet et, porttitor at sem. "
-                        "Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.",
-                        style: TextStyle(
+                        '${widget.receivedMap['placeDescription']}',
+                        style:const  TextStyle(
                             fontWeight: FontWeight.normal,
                             fontSize: 15.0,
                             color: Color.fromARGB(255, 112, 109, 109)),
                         textAlign: TextAlign.left,
                       ),
-                      SizedBox(height: 50.0),
+                      const SizedBox(height: 50.0),
                     ],
                   ),
                 ),

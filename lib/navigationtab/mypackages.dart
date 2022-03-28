@@ -6,6 +6,7 @@ import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/model/database.dart';
 import 'package:intl/intl.dart';
 import 'package:travelapp/screens/chatscreen.dart';
+import 'package:travelapp/widgets/snackbar.dart';
 
 class MyPackages extends StatelessWidget {
   const MyPackages({Key? key}) : super(key: key);
@@ -93,7 +94,15 @@ class MyPackages extends StatelessWidget {
                                   Row(
                                     children: [
                                       GestureDetector(
-                                        onTap: () {},
+                                        onTap: () async {
+                                          await database
+                                              .deleteUser(data['requestedId']);
+                                          getSnackBar(
+                                            title: 'RequestDelete',
+                                            message:
+                                                'Request Deleted Successfully',
+                                          );
+                                        },
                                         child: Container(
                                           height: 40.0,
                                           width: 70.0,

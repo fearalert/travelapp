@@ -6,25 +6,20 @@ import 'package:travelapp/components/buttons.dart';
 import 'package:travelapp/components/customTextField.dart';
 import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/model/database.dart';
-import 'package:travelapp/navigationtab/homepage.dart';
 import 'package:travelapp/screens/homescreen.dart';
 import 'package:travelapp/utils/utils.dart';
 import 'package:travelapp/widgets/snackbar.dart';
 
 class PackageDetail extends StatefulWidget {
-
   final Map<String, dynamic> receivedMap;
-   PackageDetail({Key? key,required this.receivedMap}) ;
-
-  
+  // ignore: use_key_in_widget_constructors
+  const PackageDetail({Key? key, required this.receivedMap});
 
   @override
   State<PackageDetail> createState() => _PackageDetailState();
 }
 
 class _PackageDetailState extends State<PackageDetail> {
-
-   
   final _descriptionController = TextEditingController();
   final peopleController = TextEditingController();
   DateTime? _pickedDate;
@@ -49,14 +44,16 @@ class _PackageDetailState extends State<PackageDetail> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-
-        leading: IconButton(
-        onPressed: (){
-         Get.back();
-         Get.toNamed(MainScreen.id);
-        },
-        icon: const Icon(Icons.arrow_back,color: Colors.black,))),
+          backgroundColor: Colors.white,
+          leading: IconButton(
+              onPressed: () {
+                Get.back();
+                Get.toNamed(MainScreen.id);
+              },
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+              ))),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           // _bottomSheet(context);
@@ -70,34 +67,32 @@ class _PackageDetailState extends State<PackageDetail> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                         Container(
+                        Container(
                           //  height:  50,
-                            width: size.width *1 ,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(0),
-                                color: kPrimaryColor),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 18.0, bottom: 8.0),
-                                  child: Text(
-                                      "Fill Out Details",
-                                      style: GoogleFonts.laila(
-                                          fontSize: 16.0,
-                                          letterSpacing: 1.3,
-                                          fontWeight: FontWeight.w900,
-                                          color: Colors.white),
-                                    ),
+                          width: size.width * 1,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(0),
+                              color: kPrimaryColor),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 18.0, bottom: 8.0),
+                                child: Text(
+                                  "Fill Out Details",
+                                  style: GoogleFonts.laila(
+                                      fontSize: 16.0,
+                                      letterSpacing: 1.3,
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.white),
                                 ),
-                              ],
-                            ),
-                            ),
-                        
-                        
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                
                     SizedBox(
                       height: size.height * 0.05,
                     ),
@@ -161,15 +156,19 @@ class _PackageDetailState extends State<PackageDetail> {
                     Padding(
                         padding: const EdgeInsets.only(top: 18.0),
                         child: CustomButton(
-                            ontap: ()async {
-                             await database.requestPackage(
-                                _pickedDate, int.parse(peopleController.text), '1234', user!.uid.toString(), '${widget.receivedMap['placeName']}'
-                              );
+                            ontap: () async {
+                              await database.requestPackage(
+                                  _pickedDate,
+                                  int.parse(peopleController.text),
+                                  '1234',
+                                  user!.uid.toString(),
+                                  '${widget.receivedMap['placeName']}');
                               Get.back();
-                              getSnackBar(title: 'Successful', message: 'Your request has been successfully placed', color: Colors.green.shade300);
-                          
-                              
-
+                              getSnackBar(
+                                  title: 'Successful',
+                                  message:
+                                      'Your request has been successfully placed',
+                                  color: Colors.green.shade300);
                             },
                             text: 'Submit',
                             height: 55.0,
@@ -301,10 +300,10 @@ class _PackageDetailState extends State<PackageDetail> {
                 Container(
                   alignment: Alignment.centerLeft,
                   child: Column(
-                    children:  [
+                    children: [
                       Text(
                         '${widget.receivedMap['placeDescription']}',
-                        style:const  TextStyle(
+                        style: const TextStyle(
                             fontWeight: FontWeight.normal,
                             fontSize: 15.0,
                             color: Color.fromARGB(255, 112, 109, 109)),

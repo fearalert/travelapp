@@ -48,7 +48,9 @@ dependencies:
   flutter_rating_stars: ^1.0.3+4
   image_picker: ^0.8.4+11
   firebase_storage: ^10.2.9
-
+  khalti: ^1.0.2
+  http: ^0.13.4
+  encrypt: ^5.0.1
 
 dev_dependencies:
   flutter_test:

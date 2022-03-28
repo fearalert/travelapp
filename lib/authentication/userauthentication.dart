@@ -12,7 +12,6 @@ import '../screens/homescreen.dart';
 // user signin authentication
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
-User? get currentUser => _auth.currentUser;
 // final User user =  FirebaseAuth.instance.currentUser();
 // final User? user = FirebaseAuth.instance.currentUser().then((User user) {
 //   final userid = user.uid;
@@ -26,6 +25,8 @@ class UserAuthentication {
     User user = await FirebaseAuth.instance.currentUser!;
     return user.uid;
   }
+
+  User? get currentUser => _auth.currentUser;
 
   Future signIn(String? email, String? password) async {
     try {

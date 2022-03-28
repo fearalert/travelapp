@@ -4,6 +4,7 @@ import 'package:travelapp/authentication/userauthentication.dart';
 import 'package:travelapp/model/placemodel.dart';
 import 'package:travelapp/model/usermodel.dart';
 import 'package:travelapp/utils/utils.dart';
+import 'package:uuid/uuid.dart';
 
 DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
 
@@ -36,8 +37,10 @@ class Database {
   }
 
 Future<void> requestPackage(DateTime? date, int people, String paymentId, String userId, String packageId) {
+     const uuid = Uuid();
+     String uid = uuid.v4();
       // Call the user's CollectionReference to add a new user
-      return requestedPackage.doc()
+      return requestedPackage.doc(uid)
           .set({
             'date': date,
             'people': people,
@@ -45,7 +48,7 @@ Future<void> requestPackage(DateTime? date, int people, String paymentId, String
             'userId': userId,
             'packageId': packageId,
             'status': 'pending',
-            'requestedId': requestedPackage.doc().id
+            'requestedId': uid
             
           },SetOptions(merge: true))
           .then((value) => print("Requested Successfully"))
@@ -59,5 +62,15 @@ Stream<List<PlacesDetails>> getPackages(){
     return snapshot.docs.map((doc)=> PlacesDetails.fromMap(doc.data())).toList();
 });
 }
+
+Future<void> deleteUser(String requestId) {
+  return requestedPackage.doc(requestId)
+    .delete()
+    .then((value) => print("User Deleted"))
+    .catchError((error) => print("Failed to delete user: $error"));
+}
+
+
+
 }
 Database database = Database();

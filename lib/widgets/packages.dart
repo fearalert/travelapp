@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:travelapp/components/buttons.dart';
 import 'package:travelapp/components/customTextField.dart';
 import 'package:travelapp/constants/constants.dart';
@@ -9,6 +10,7 @@ import 'package:travelapp/model/database.dart';
 import 'package:travelapp/screens/homescreen.dart';
 import 'package:travelapp/utils/utils.dart';
 import 'package:travelapp/widgets/snackbar.dart';
+
 
 class PackageDetail extends StatefulWidget {
   final Map<String, dynamic> receivedMap;
@@ -42,6 +44,7 @@ class _PackageDetailState extends State<PackageDetail> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.white,
@@ -157,18 +160,73 @@ class _PackageDetailState extends State<PackageDetail> {
                         padding: const EdgeInsets.only(top: 18.0),
                         child: CustomButton(
                             ontap: () async {
-                              await database.requestPackage(
-                                  _pickedDate,
-                                  int.parse(peopleController.text),
-                                  '1234',
-                                  user!.uid.toString(),
-                                  '${widget.receivedMap['placeName']}');
-                              Get.back();
-                              getSnackBar(
-                                  title: 'Successful',
-                                  message:
-                                      'Your request has been successfully placed',
-                                  color: Colors.green.shade300);
+
+                             
+                              int amount = int.parse(widget.receivedMap['price'].toStringAsFixed(0));
+                              int people = int.parse(peopleController.text);
+                              
+                            
+
+
+                                          KhaltiScope.of(context).pay(
+                                        config: PaymentConfig(
+                                          amount: amount * 100 * people  ,
+                                          productIdentity: widget.receivedMap['packageId'],
+                                          productName: widget.receivedMap['packageName'],
+                                        ),
+                                        preferences: [
+                                          PaymentPreference.khalti,
+                                        ],
+                                        onSuccess: (su) async{
+
+                                          // Map<String, dynamic> data = PaymentSucessModel;
+
+                                            await database.requestPackage(
+                                                  _pickedDate, //date
+                                                  int.parse(peopleController.text),//people
+                                                  '1234',//paymentid
+                                                  user!.uid.toString(),//uuid
+                                                  '${widget.receivedMap['packageId']}',//packageid
+                                                  '${widget.receivedMap['packageName']}',
+                                                  '${widget.receivedMap['imgUrl']}'
+
+                                                  );
+
+                                                  //  database.addPayment(su);
+
+                                                      Get.back();
+                                                      getSnackBar(
+                                                          title: 'Successful',
+                                                          message:
+                                                              'Your request has been successfully placed',
+                                                          color: Colors.green.shade300);
+
+                                          // print(su);
+                                          const successsnackBar = SnackBar(
+                                            content: Text('Payment Successful'),
+                                          );
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(successsnackBar);
+                                        },
+                                        onFailure: (fa) {
+                                          const failedsnackBar = SnackBar(
+                                            content: Text('Payment Failed'),
+                                          );
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(failedsnackBar);
+                                        },
+                                        onCancel: () {
+                                          const cancelsnackBar = SnackBar(
+                                            content: Text('Payment Cancelled'),
+                                          );
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(cancelsnackBar);
+                                        },
+                                      );
+
+
+
+
                             },
                             text: 'Submit',
                             height: 55.0,
@@ -224,7 +282,7 @@ class _PackageDetailState extends State<PackageDetail> {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Excitement for 5 days",
+                        '${widget.receivedMap['packageName']}',
                         style: GoogleFonts.cabin(
                           fontWeight: FontWeight.bold,
                           fontSize: 25,
@@ -252,7 +310,7 @@ class _PackageDetailState extends State<PackageDetail> {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        '${widget.receivedMap['placeName']}',
+                        '${widget.receivedMap['locationName']}',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 13,

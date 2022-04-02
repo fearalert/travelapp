@@ -13,6 +13,7 @@ import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/controllers/colorcontroller.dart';
 import 'package:travelapp/controllers/textcontroller.dart';
 import 'package:travelapp/controllers/usercontroller.dart';
+import 'package:travelapp/model/usermodel.dart';
 import 'package:travelapp/screens/login.dart';
 import 'package:travelapp/utils/storage.dart';
 import 'package:travelapp/utils/utils.dart';
@@ -85,21 +86,12 @@ class Profile extends StatelessWidget {
                                     SizedBox(
                                       height: size.height * 0.002,
                                     ),
+                                    
                                     Center(
-                                      child: Obx(
-                                        () {
-                                          if (userController.user.isEmpty) {
-                                            return Text(
-                                              'username',
-                                              style: GoogleFonts.montserrat(
-                                                fontSize: 21.0,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            );
-                                          }
-                                          return Text(
-                                            user!.email.toString(),
+                                      child: 
+                                        
+                                          Text(
+                                            userDetail.name.toString(),
                                             // userController.user[0].userName
                                             //     .toUpperCase(),
                                             style: GoogleFonts.montserrat(
@@ -107,9 +99,9 @@ class Profile extends StatelessWidget {
                                               color: Colors.black,
                                               fontWeight: FontWeight.w500,
                                             ),
-                                          );
-                                        },
-                                      ),
+                                          )
+                                        
+                                      
                                     ),
                                     const SizedBox(
                                       width: 120,
@@ -165,28 +157,19 @@ class Profile extends StatelessWidget {
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.only(left: 16.0),
-                                              child: Obx(
-                                                () {
-                                                  if (userController.user.isEmpty) {
-                                                    return Text(
-                                                      'userName',
-                                                      style: GoogleFonts.montserrat(
-                                                        fontSize: 18.0,
-                                                        color: Colors.black,
-                                                        // fontWeight: FontWeight.bold,
-                                                      ),
-                                                    );
-                                                  }
-                                                  return Text(
-                                                    userController.user[0].name!,
+                                              child: 
+                                                
+                                                  
+                                                   Text(
+                                                    userDetail.name.toString(),
                                                     style: GoogleFonts.montserrat(
                                                       fontSize: 18.0,
                                                       color: Colors.black,
                                                       // fontWeight: FontWeight.bold,
                                                     ),
-                                                  );
-                                                },
-                                              ),
+                                                  )
+                                                
+                                              
                                             ),
                                           ),
                                         ],
@@ -212,29 +195,19 @@ class Profile extends StatelessWidget {
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.only(left: 16.0),
-                                              child: Obx(
-                                                () {
-                                                  if (userController.user.isEmpty) {
-                                                    return Text(
-                                                      'phone number',
-                                                      style: GoogleFonts.montserrat(
-                                                        fontSize: 18.0,
-                                                        color: Colors.black,
-                                                        // fontWeight: FontWeight.bold,
-                                                      ),
-                                                    );
-                                                  }
-                                                  return Text(
-                                                    '${userController.user[0].phoneNo}',
+                                              child: 
+                                                
+                                                   Text(
+                                                    userDetail.phoneNo.toString(),
                                                     style: GoogleFonts.montserrat(
                                                       fontSize: 18.0,
                                                       color: Colors.black,
                                                       letterSpacing: 1.3,
                                                       // fontWeight: FontWeight.bold,
                                                     ),
-                                                  );
-                                                },
-                                              ),
+                                                  )
+                                              
+                                              
                                             ),
                                           ),
                                         ],
@@ -263,28 +236,17 @@ class Profile extends StatelessWidget {
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.only(left: 16.0),
-                                              child: Obx(
-                                                () {
-                                                  if (userController.user.isEmpty) {
-                                                    return Text(
-                                                      'email',
-                                                      style: GoogleFonts.montserrat(
-                                                        fontSize: 18.0,
-                                                        color: Colors.black,
-                                                        // fontWeight: FontWeight.bold,
-                                                      ),
-                                                    );
-                                                  }
-                                                  return Text(
-                                                    userController.user[0].email!,
+                                              child: 
+                                                  Text(
+                                                    userDetail.email.toString(),
                                                     style: GoogleFonts.montserrat(
                                                       fontSize: 18.0,
                                                       color: Colors.black,
                                                       // fontWeight: FontWeight.bold,
                                                     ),
-                                                  );
-                                                },
-                                              ),
+                                                  )
+                                                
+                                              
                                             ),
                                           ),
                                         ],

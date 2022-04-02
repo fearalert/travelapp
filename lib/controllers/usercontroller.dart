@@ -11,6 +11,6 @@ class UserController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    userData.bindStream(database.userDataStream());
+    database.getCurrentUserData();
   }
 }

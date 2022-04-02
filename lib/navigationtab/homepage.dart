@@ -19,54 +19,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final Stream<QuerySnapshot> _packagestream = FirebaseFirestore.instance.collection('places').snapshots();
+  final Stream<QuerySnapshot> _packagestream = FirebaseFirestore.instance.collection('packages').snapshots();
   @override
   Widget build(BuildContext context) {
     final searchController = TextEditingController();
-    final List<String> categoryName = [
-      'Pokhara',
-      'Mustang',
-      'Lumbini',
-      'Kanyam',
-      'Taplejung',
-      'Mirik',
-      'Sikkim',
-      'Karnali',
-      'GOA',
-      'Bhutan',
-      'Haridwar',
-      'Koshi',
-    ];
-
-    // final List<String> categoryImages = [
-    //   "assets/images/img-1.jpg",
-    //   "assets/images/img-2.jpg",
-    //   "assets/images/img-3.jpg",
-    //   "assets/images/img-4.jpg",
-    //   "assets/images/img-5.jpg",
-    //   "assets/images/img-6.jpg",
-    //   "assets/images/img-7.jpg",
-    //   "assets/images/img-8.jpg",
-    //   "assets/images/img-9.jpg",
-    //   "assets/images/img-10.jpg",
-    //   "assets/images/paris.jpg",
-    //   "assets/images/img-12.jpg",
-    // ];
-
-    final List<int> prices = [
-      120,
-      270,
-      340,
-      500,
-      450,
-      700,
-      120,
-      456,
-      320,
-      780,
-      111,
-      700
-    ];
+   
     return Scaffold(
       backgroundColor: Color.fromARGB(239, 255, 255, 255),
       body: SafeArea(
@@ -93,31 +50,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 15,
               ),
-              SizedBox(
-                height: 50,
-                child: ListView.builder(
-                    itemCount: categoryName.length,
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                        ),
-                        color: kPrimaryColor,
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(15.0, 5, 15, 5),
-                            child: Text(
-                              categoryName[index],
-                              style: GoogleFonts.poppins(
-                                  color: Colors.white, fontSize: 19),
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-              ),
+             
               const SizedBox(
                 height: 25,
               ),
@@ -165,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                                         
                                         backgroundImage: NetworkImage(data['imgUrl']),
                                         ),
-                                      title: Text(data['placeName']),
+                                      title: Text(data['packageName']),
                                       subtitle: Text(data['locationName']),
                                       trailing: Text(data['price'].toString()),
                               

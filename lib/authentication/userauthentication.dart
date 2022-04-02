@@ -249,7 +249,7 @@ class UserAuthentication {
     userModel.email = user!.email;
     userModel.id = user!.uid;
     userModel.name = registrationController.nameController.text;
-    userModel.phoneNo = int.parse(registrationController.phoneController.text);
+    userModel.phoneNo = registrationController.phoneController.text;
     await firebaseFirestore
         .collection("users")
         .doc(user!.uid)

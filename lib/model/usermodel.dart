@@ -2,7 +2,7 @@ class UserModel {
   String? id;
   String? email;
   String? name;
-  int? phoneNo;
+  String? phoneNo;
   String? profileUrl;
 
   UserModel({
@@ -35,3 +35,5 @@ class UserModel {
     };
   }
 }
+
+late UserModel userDetail;

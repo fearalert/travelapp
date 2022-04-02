@@ -52,6 +52,7 @@ dependencies:
   khalti: ^1.0.2
   http: ^0.13.4
   encrypt: ^5.0.1
+  khalti_flutter: ^2.0.2
 
 dev_dependencies:
   flutter_test:

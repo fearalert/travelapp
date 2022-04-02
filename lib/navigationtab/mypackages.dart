@@ -69,12 +69,14 @@ class MyPackages extends StatelessWidget {
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              const CircleAvatar(
-                                  backgroundColor: kSecondaryColor, radius: 30),
+                               CircleAvatar(
+                                  backgroundColor: kSecondaryColor, radius: 30,
+                                  backgroundImage: NetworkImage(data['packageImg']),
+                                  ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(data['packageId']),
+                                  Text(data['packageName']),
                                   const SizedBox(
                                     height: 10,
                                   ),
@@ -107,7 +109,7 @@ class MyPackages extends StatelessWidget {
                                           height: 40.0,
                                           width: 70.0,
                                           decoration: BoxDecoration(
-                                            color: Colors.red.shade300,
+                                            color: Colors.grey.shade400,
                                             borderRadius:
                                                 const BorderRadius.all(
                                                     Radius.circular(12)),
@@ -147,7 +149,7 @@ class MyPackages extends StatelessWidget {
                                           height: 40.0,
                                           width: 70.0,
                                           decoration: BoxDecoration(
-                                            color: Colors.indigo.shade400,
+                                            color: Colors.grey.shade400,
                                             borderRadius:
                                                 const BorderRadius.all(
                                                     Radius.circular(12)),
@@ -178,10 +180,10 @@ class MyPackages extends StatelessWidget {
                               ),
                               Center(
                                 child: Text(
-                                  data['paymentId'],
+                                 'Status:\n'+ data['status'],
                                   style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.normal),
                                 ),
                               )
                             ]),

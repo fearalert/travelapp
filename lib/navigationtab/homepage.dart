@@ -2,13 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
-import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 import 'package:travelapp/components/customTextField.dart';
-import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/widgets/packages.dart';
-
-import '../model/database.dart';
 
 class HomePage extends StatefulWidget {
   static const id = '/homePage';
@@ -19,13 +14,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final Stream<QuerySnapshot> _packagestream = FirebaseFirestore.instance.collection('packages').snapshots();
+  final Stream<QuerySnapshot> _packagestream =
+      FirebaseFirestore.instance.collection('packages').snapshots();
   @override
   Widget build(BuildContext context) {
     final searchController = TextEditingController();
-   
+
     return Scaffold(
-      backgroundColor: Color.fromARGB(239, 255, 255, 255),
+      backgroundColor: const Color.fromARGB(239, 255, 255, 255),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
@@ -39,82 +35,75 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               const SizedBox(
-                height: 20,
+                height: 30,
               ),
-              CustomTextField(
-                icon: Icons.search,
-                hintText: "Type to Search",
-                textController: searchController,
-                isNumber: false,
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-             
+              // CustomTextField(
+              //   icon: Icons.search,
+              //   hintText: "Type to Search",
+              //   textController: searchController,
+              //   isNumber: false,
+              // ),
+              // const SizedBox(
+              //   height: 15,
+              // ),
+
               const SizedBox(
                 height: 25,
               ),
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                          stream: _packagestream,
-                          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                            if (snapshot.hasError) {
-                              return Text('Something went wrong');
-                            }
+                  stream: _packagestream,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      return const Center(child: Text('Something went wrong'));
+                    }
 
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return Text("Loading");
-                            }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: Text("Loading"));
+                    }
 
-                            return ListView(
-                              children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                              Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-                                return Padding(
-                                  padding: const EdgeInsets.only(top:6.0, bottom: 6.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius:  BorderRadius.circular(15),
-                                      boxShadow:  [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          spreadRadius: 5,
-                                          blurRadius: 20,
-                                          offset: const  Offset(3, 7), // changes position of shadow
-                                        ),
-                                             ]),
-                                    
-                                    child: ListTile(
-                                      onTap: (){
-                                        Get.off(
-                                       PackageDetail(
-                                         receivedMap: data,
-                                      )
-                                        );
-                                      },
-                                     
-                                      leading:  CircleAvatar(
-                                        radius:25,
-                                        
-                                        backgroundImage: NetworkImage(data['imgUrl']),
-                                        ),
-                                      title: Text(data['packageName']),
-                                      subtitle: Text(data['locationName']),
-                                      trailing: Text(data['price'].toString()),
-                              
-                                    ),
+                    return ListView(
+                      children:
+                          snapshot.data!.docs.map((DocumentSnapshot document) {
+                        Map<String, dynamic> data =
+                            document.data()! as Map<String, dynamic>;
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    spreadRadius: 5,
+                                    blurRadius: 20,
+                                    offset: const Offset(
+                                        3, 7), // changes position of shadow
                                   ),
-                                );
-                              }).toList(),
-                            );
-      },
-    ),
+                                ]),
+                            child: ListTile(
+                              onTap: () {
+                                Get.off(PackageDetail(
+                                  receivedMap: data,
+                                ));
+                              },
+                              leading: CircleAvatar(
+                                radius: 25,
+                                backgroundImage: NetworkImage(data['imgUrl']),
+                              ),
+                              title: Text(data['packageName']),
+                              subtitle: Text(data['locationName']),
+                              trailing: Text(data['price'].toString()),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  },
+                ),
               )
-
-
-
-
-
 
               // StreamBuilder(
               //   stream: database.getPackages(),
@@ -189,7 +178,6 @@ class _HomePageState extends State<HomePage> {
               //         staggeredTileBuilder: (index) {
               //           return StaggeredTile.count(1, index.isOdd ? 1.2 : 1.6);
               //         });
-                 
 
               //    }
               // )
@@ -238,20 +226,6 @@ class _HomePageState extends State<HomePage> {
 
       // ),
       // ),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     );
   }
 }

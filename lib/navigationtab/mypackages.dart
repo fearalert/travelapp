@@ -19,7 +19,7 @@ class MyPackages extends StatelessWidget {
           automaticallyImplyLeading: false,
           centerTitle: true,
           backgroundColor: kPrimaryColor,
-          title: Text('My Packages',
+          title: Text('My Bookings',
               style: GoogleFonts.laila(
                   fontSize: 24.0, fontWeight: FontWeight.bold)),
           //   actions: [
@@ -42,13 +42,19 @@ class MyPackages extends StatelessWidget {
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text("Loading");
+              return const Center(child: Text("Loading"));
             }
 
             return ListView(
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
+                getPackageImage() {
+                  return data['packageImg'] != null
+                      ? NetworkImage(data['packageImg'])
+                      : Image.asset('assets/images/package.png');
+                }
+
                 return Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Container(
@@ -69,10 +75,10 @@ class MyPackages extends StatelessWidget {
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                               CircleAvatar(
-                                  backgroundColor: kSecondaryColor, radius: 30,
-                                  backgroundImage: NetworkImage(data['packageImg']),
-                                  ),
+                              CircleAvatar(
+                                  backgroundColor: kSecondaryColor,
+                                  radius: 30,
+                                  backgroundImage: data['packageImg']),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -82,6 +88,8 @@ class MyPackages extends StatelessWidget {
                                   ),
                                   Row(
                                     children: [
+                                      const Icon(Icons.calendar_month,
+                                          size: 12),
                                       Text(DateFormat('yyyy-MM-dd')
                                           .format(DateTime.parse(
                                               data['date'].toDate().toString()))
@@ -100,7 +108,7 @@ class MyPackages extends StatelessWidget {
                                           await database
                                               .deleteUser(data['requestedId']);
                                           getSnackBar(
-                                            title: 'RequestDelete',
+                                            title: 'Request Delete',
                                             message:
                                                 'Request Deleted Successfully',
                                           );
@@ -178,10 +186,10 @@ class MyPackages extends StatelessWidget {
                                   )
                                 ],
                               ),
-                              Center(
+                              const Center(
                                 child: Text(
-                                 'Status:\n'+ data['status'],
-                                  style: const TextStyle(
+                                  'Booked',
+                                  style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.normal),
                                 ),

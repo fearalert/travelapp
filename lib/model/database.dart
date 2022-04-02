@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:travelapp/authentication/userauthentication.dart';
+import 'package:travelapp/model/paymentmodel.dart';
 import 'package:travelapp/model/placemodel.dart';
 import 'package:travelapp/model/usermodel.dart';
 import 'package:travelapp/utils/utils.dart';
@@ -15,13 +18,15 @@ DatabaseReference usersReference = databaseReference.child('users');
 class Database {
  
 
-  Future getCurrentUserData() async {
-    FirebaseFirestore.instance
+  Future<void> getCurrentUserData() async {
+   return await FirebaseFirestore.instance
         .collection("users")
-        .doc(UserAuthentication().getUid().toString())
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
-      loggedInUser = UserModel.fromMap(value.data());
+      userDetail = UserModel.fromMap(value.data());
+      print(value.data());
+
     });
   }
 
@@ -36,7 +41,7 @@ class Database {
     });
   }
 
-Future<void> requestPackage(DateTime? date, int people, String paymentId, String userId, String packageId) {
+Future<void> requestPackage(DateTime? date, int people, String paymentId, String userId, String packageId, String packageName, String packageImg) {
      const uuid = Uuid();
      String uid = uuid.v4();
       // Call the user's CollectionReference to add a new user
@@ -47,8 +52,14 @@ Future<void> requestPackage(DateTime? date, int people, String paymentId, String
             'paymentId': paymentId,
             'userId': userId,
             'packageId': packageId,
+            'packageName': packageName,
+            'packageImg': packageImg,
             'status': 'pending',
-            'requestedId': uid
+            'requestedId': uid,
+            'userEmail': userDetail.email,
+            'userPhone': userDetail.phoneNo,
+            'userName': userDetail.name,
+            
             
           },SetOptions(merge: true))
           .then((value) => print("Requested Successfully"))
@@ -56,7 +67,8 @@ Future<void> requestPackage(DateTime? date, int people, String paymentId, String
     }
   
 Stream<List<PlacesDetails>> getPackages(){
-  return FirebaseFirestore.instance.collection('places')
+  
+  return FirebaseFirestore.instance.collection('packages')
   .snapshots()
   .map((snapshot) {
     return snapshot.docs.map((doc)=> PlacesDetails.fromMap(doc.data())).toList();
@@ -71,6 +83,20 @@ Future<void> deleteUser(String requestId) {
 }
 
 
+Future<void> addPayment(Map<String, dynamic> data){
+// final paymentRef = FirebaseFirestore.instance.collection('payments').withConverter<PaymentSuccessModel>(
+//       fromFirestore: (snapshot, _) => PaymentSuccessModel.fromMap(snapshot.data()!),
+//       toFirestore: (paymentsuccessmodel, _) => paymentsuccessmodel.toMap(),
+//     );
+
+  //    return  paymentRef.add(
+  //  data);
+
+  return FirebaseFirestore.instance.collection('payments')
+    .doc()
+    .set(data);
+    
+}
 
 }
 Database database = Database();

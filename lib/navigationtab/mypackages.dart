@@ -49,11 +49,11 @@ class MyPackages extends StatelessWidget {
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
-                getPackageImage() {
-                  return data['packageImg'] != null
-                      ? NetworkImage(data['packageImg'])
-                      : Image.asset('assets/images/package.png');
-                }
+                // getPackageImage() {
+                //   return data['packageImg'] != null
+                //       ? NetworkImage(data['packageImg'])
+                //       : Image.asset('assets/images/package.png');
+                // }
 
                 return Padding(
                     padding: const EdgeInsets.all(10.0),
@@ -78,7 +78,7 @@ class MyPackages extends StatelessWidget {
                               CircleAvatar(
                                   backgroundColor: kSecondaryColor,
                                   radius: 30,
-                                  backgroundImage: data['packageImg']),
+                                  backgroundImage: NetworkImage(data['packageImg'])),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [

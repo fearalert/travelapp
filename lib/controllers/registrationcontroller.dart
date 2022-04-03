@@ -6,13 +6,15 @@ class RegistrationController extends GetxController {
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final profileController = TextEditingController();
 
   @override
   void onClose() {
-    super.onClose();
+    super.dispose();
     nameController.dispose();
     phoneController.dispose();
     emailController.dispose();
     passwordController.dispose();
+    profileController.dispose();
   }
 }

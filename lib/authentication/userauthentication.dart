@@ -203,6 +203,7 @@ class UserAuthentication {
   }
 
 // Google SignIn Auth
+  // ignore: body_might_complete_normally_nullable
   Future<User?> signInWithGoogle() async {
     try {
       // trigger the authentication dialog display google accounts
@@ -221,6 +222,24 @@ class UserAuthentication {
         // Once the SignIn return the user data from the firebase
         UserCredential userCredential =
             await _auth.signInWithCredential(credential);
+        assert(user!.uid == currentUser!.uid);
+
+        UserModel userModel = UserModel();
+
+        userModel.email = user!.email;
+        userModel.id = user!.uid;
+        userModel.name = user!.displayName;
+        userModel.phoneNo = user!.phoneNumber;
+        userModel.profileUrl = user!.photoURL;
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(user!.uid)
+            .set(userModel.toMap());
+        getSnackBar(
+          title: "Congratulations",
+          message: 'Account created Sucessfully',
+          color: Colors.green.shade300,
+        );
         Get.toNamed(MainScreen.id);
 
         return userCredential.user;
@@ -232,8 +251,8 @@ class UserAuthentication {
         color: Colors.red.shade300,
       );
       Text(error.toString());
+      return currentUser;
     }
-    return null;
   }
 
   Future<void> logOut() async {
@@ -256,7 +275,7 @@ class UserAuthentication {
         .set(userModel.toMap());
     getSnackBar(
       title: "Congratulations",
-      message: 'Account created Sucessfully',
+      message: 'Data Uploaded Sucessfully',
       color: Colors.green.shade300,
     );
     print('Registration Sucessful');

@@ -49,11 +49,7 @@ class MyPackages extends StatelessWidget {
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
-                getPackageImage() {
-                  return data['packageImg'] != null
-                      ? NetworkImage(data['packageImg'])
-                      : Image.asset('assets/images/package.png');
-                }
+                // database.deleteRequestAfterDate();
 
                 return Padding(
                     padding: const EdgeInsets.all(10.0),
@@ -76,9 +72,17 @@ class MyPackages extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               CircleAvatar(
-                                  backgroundColor: kSecondaryColor,
-                                  radius: 30,
-                                  backgroundImage: data['packageImg']),
+                                backgroundColor: kSecondaryColor,
+                                radius: 30,
+                                backgroundImage: Image.network(
+                                  data['packageImg'],
+                                  errorBuilder: (BuildContext context,
+                                      Object exception,
+                                      StackTrace? stackTrace) {
+                                    return const Icon(Icons.do_not_disturb);
+                                  },
+                                ).image,
+                              ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -105,8 +109,8 @@ class MyPackages extends StatelessWidget {
                                     children: [
                                       GestureDetector(
                                         onTap: () async {
-                                          await database
-                                              .deleteUser(data['requestedId']);
+                                          await database.deleteRequest(
+                                              data['requestedId']);
                                           getSnackBar(
                                             title: 'Request Delete',
                                             message:

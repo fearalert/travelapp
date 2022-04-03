@@ -1,56 +1,109 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travelapp/components/buttons.dart';
 import 'package:travelapp/components/customTextField.dart';
 import 'package:travelapp/constants/constants.dart';
-import 'package:travelapp/controllers/colorcontroller.dart';
 import 'package:travelapp/controllers/textcontroller.dart';
 import 'package:travelapp/controllers/usercontroller.dart';
+import 'package:travelapp/model/database.dart';
 import 'package:travelapp/model/usermodel.dart';
 import 'package:travelapp/screens/login.dart';
+import 'package:travelapp/utils/editprofile.dart';
 import 'package:travelapp/utils/storage.dart';
 import 'package:travelapp/utils/utils.dart';
 import 'package:travelapp/widgets/snackbar.dart';
 
-class Profile extends StatelessWidget {
-  static const id = '/profile';
-  final userController = Get.put(UserController());
-  final textController = Get.put(TextController());
+final textController = TextController();
 
-  Profile({Key? key}) : super(key: key);
+class Profile extends StatefulWidget {
+  static const id = '/profile';
+
+  const Profile({Key? key}) : super(key: key);
+
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  final userController = Get.put(UserController());
+  File? _image;
+  Future pickImageFromGallery() async {
+    try {
+      final image = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+      );
+      setState(() {
+        if (image != null) {
+          _image = File(image.path);
+        } else {
+          getSnackBar(
+              title: 'Unable to pick image',
+              color: Colors.blueGrey.shade400,
+              message: 'No image Selected');
+        }
+      });
+
+      // final temp = await saveimage(image.path);
+
+    } on PlatformException catch (error) {
+      print(error);
+      getSnackBar(
+          title: 'Unable to pick image',
+          color: Colors.blueGrey.shade400,
+          message: 'No image Selected');
+    }
+  }
+
+  Future uploadProfileToCloud() async {
+    try {
+      await pickImageFromGallery();
+      final storage = Storage();
+      storage.image = _image;
+      storage.uploadImage();
+    } on PlatformException catch (e) {
+      print(e);
+      getSnackBar(
+          title: 'Unable to upload image',
+          color: Colors.red.shade400,
+          message: 'Something went wrong');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // final textController = Get.find<TextController>();
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-        body: StreamBuilder<QuerySnapshot>(
-            stream: null,
-            builder: (context, snapshot) {
+        body: StreamBuilder<Stream>(
+            // stream: usersCollection.doc(user?.uid).snapshots(),
+            stream: database.getCurrentUserData().asStream(),
+            builder: (ctx, streamSnapshot) {
+              if (ConnectionState.waiting == streamSnapshot.connectionState) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
               return SingleChildScrollView(
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: size.height * 0.08, //only for user profile
+                        height: size.height * 0.08,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
                           left: 20.0,
                           right: 20.0,
                         ),
-                        child: Container(
-                          height: size.height * 0.6, //user profile
-                          // height: size.height * 0.7, //pros profile
-
+                        child: SizedBox(
+                          height: size.height * 0.6,
                           width: size.width,
                           child: Stack(
                             children: [
@@ -89,12 +142,9 @@ class Profile extends StatelessWidget {
                                           SizedBox(
                                             height: size.height * 0.002,
                                           ),
-
                                           Center(
                                               child: Text(
                                             userDetail.name.toString(),
-                                            // userController.user[0].userName
-                                            //     .toUpperCase(),
                                             style: GoogleFonts.montserrat(
                                               fontSize: 21.0,
                                               color: Colors.black,
@@ -165,7 +215,6 @@ class Profile extends StatelessWidget {
                                                             .montserrat(
                                                           fontSize: 18.0,
                                                           color: Colors.black,
-                                                          // fontWeight: FontWeight.bold,
                                                         ),
                                                       )),
                                                 ),
@@ -262,109 +311,54 @@ class Profile extends StatelessWidget {
                                 top: 20,
                                 left: 45.0,
                                 right: 45.0,
-                                child: Obx(
-                                  () {
-                                    if (userController.user.isEmpty) {
-                                      return const CircleAvatar(
-                                        radius: 55.0,
-                                        backgroundColor: kSecondaryColor,
-                                        backgroundImage: NetworkImage(
-                                            'https://th.bing.com/th/id/R.6aebe157b803482272e99fdb57a345c6?rik=LMN6%2fZeOsYP9pg&pid=ImgRaw&r=0'),
-                                      );
-                                    }
-
-                                    return CircleAvatar(
-                                      radius: 55,
-                                      backgroundColor: Colors.teal,
-                                      backgroundImage: userController
-                                                  .user[0].profileUrl ==
-                                              null
-                                          ? const AssetImage(
-                                              'images/person.png')
-                                          : Image.network(
-                                              userController
-                                                  .user[0].profileUrl!,
-                                              loadingBuilder:
-                                                  (context, child, progress) {
-                                                if (progress == null)
-                                                  return child;
-                                                return const CircularProgressIndicator(
-                                                  color: kSecondaryColor,
-                                                );
-                                              },
-                                            ).image,
-                                    );
-                                  },
-                                  // child: CircleAvatar(
-                                  //   radius: 55.0,
-                                  //   backgroundColor: Colors.redAccent,
-                                  // ),
+                                child: CircleAvatar(
+                                  radius: 55,
+                                  backgroundColor: kSecondaryColor,
+                                  backgroundImage: userDetail.profileUrl
+                                              .toString() ==
+                                          null
+                                      ? const NetworkImage(
+                                          'https://th.bing.com/th/id/R.e133e625e233464efc722e3f58217179?rik=yFi2QEYkCcm0pw&pid=ImgRaw&r=0')
+                                      // FileImage(_image!)
+                                      : Image.network(
+                                          userDetail.profileUrl.toString(),
+                                          loadingBuilder:
+                                              (context, child, progress) {
+                                            if (progress == null) {
+                                              return child;
+                                            }
+                                            return const CircularProgressIndicator(
+                                              color: kPrimaryColor,
+                                            );
+                                          },
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (BuildContext context,
+                                              Object exception,
+                                              StackTrace? stackTrace) {
+                                            return const Icon(Icons.flag);
+                                          },
+                                        ).image,
                                 ),
                               ),
                               Positioned(
                                 top: 110.0,
                                 left: 100.0,
                                 right: 35.0,
-                                child: GetX<ColourController>(
-                                    init: ColourController(),
-                                    builder: (colourController) {
-                                      return CircleAvatar(
-                                        radius: 12,
-                                        backgroundColor: colourController.color,
-                                        child: GestureDetector(
-                                          child: const Icon(
-                                            Icons.camera_alt_rounded,
-                                            color: Colors.black,
-                                            size: 17,
-                                          ),
-                                          onTap: () async {
-                                            colourController
-                                                .changeColour(Colors.white);
-                                            try {
-                                              final pickedImage = ImagePicker();
-                                              final pickedFile =
-                                                  await pickedImage.pickImage(
-                                                      source:
-                                                          ImageSource.gallery);
-
-                                              File file =
-                                                  File(pickedFile!.path);
-
-                                              if (file == null) {
-                                                colourController.changeColour(
-                                                    Colors.white54);
-                                                return;
-                                              }
-
-                                              colourController
-                                                  .changeColour(Colors.white54);
-
-                                              // String fileName = file.files.single.name;
-                                              // String path = file.files.single.path;
-                                              bool uploaded =
-                                                  await storage.uploadImage();
-
-                                              if (uploaded) {
-                                                getSnackBar(
-                                                    title: 'SUCCESS!',
-                                                    message:
-                                                        'Your Profile Picture was updated');
-                                              } else {
-                                                getSnackBar(
-                                                    title: 'ERROR!',
-                                                    message:
-                                                        'Your Profile Picture could not be updated');
-                                              }
-                                            } catch (e) {
-                                              print(e);
-                                              colourController
-                                                  .changeColour(Colors.white54);
-                                            }
-                                          },
-                                        ),
-                                      );
-                                    }),
-                              ),
+                                child: CircleAvatar(
+                                  radius: 12,
+                                  backgroundColor: Colors.tealAccent,
+                                  child: GestureDetector(
+                                    child: const Icon(
+                                      Icons.camera_alt_rounded,
+                                      color: Colors.black,
+                                      size: 17,
+                                    ),
+                                    onTap: () {
+                                      uploadProfileToCloud();
+                                    },
+                                  ),
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -382,12 +376,7 @@ class Profile extends StatelessWidget {
                                 height: 55.0,
                                 text: 'Edit Profile',
                                 ontap: () {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(builder: (context) => EditProfile()),
-                                  // );
                                   showBottomSheet(
-                                    // isScrollControlled: true,
                                     elevation: 4.0,
                                     shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.only(
@@ -395,7 +384,6 @@ class Profile extends StatelessWidget {
                                         topRight: Radius.circular(26.0),
                                       ),
                                     ),
-                                    // backgroundColor: Color(0xFF0E0E0F),
                                     backgroundColor: kTextfieldColor,
                                     context: context,
                                     builder: (context) {
@@ -433,8 +421,6 @@ class Profile extends StatelessWidget {
                                                   Radius.circular(15.0),
                                                 ),
                                               ),
-                                              // height: size.height * 0.3,
-                                              // width: screenWidth,
                                               child: Padding(
                                                 padding:
                                                     const EdgeInsets.all(8.0),
@@ -462,7 +448,7 @@ class Profile extends StatelessWidget {
                                                       icon: Icons.phone,
                                                       textController:
                                                           textController
-                                                              .emailController,
+                                                              .phoneController,
                                                       isNumber: false,
                                                     ),
                                                   ],
@@ -476,9 +462,9 @@ class Profile extends StatelessWidget {
                                             children: [
                                               CustomButton(
                                                 ontap: () {
-                                                  textController.emailController
+                                                  textController.nameController
                                                       .clear();
-                                                  textController.emailController
+                                                  textController.phoneController
                                                       .clear();
                                                   Get.back();
                                                 },
@@ -487,14 +473,8 @@ class Profile extends StatelessWidget {
                                                 text: 'Cancel',
                                                 width: 160.0,
                                               ),
-                                              CustomButton(
-                                                ontap: () {
-                                                  textController.emailController
-                                                      .clear();
-                                                  textController.emailController
-                                                      .clear();
-                                                  Get.back();
-                                                },
+                                              const CustomButton(
+                                                ontap: editProfile,
                                                 color: kPrimaryColor,
                                                 height: 55.0,
                                                 text: 'Save Changes',

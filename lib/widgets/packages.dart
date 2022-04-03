@@ -179,6 +179,7 @@ class _PackageDetailState extends State<PackageDetail> {
 
                                   await database.requestPackage(
                                       _pickedDate, //date
+                                      // _selectedTime, //date
                                       int.parse(peopleController.text), //people
                                       //  '1235'//amount
                                       user!.uid.toString(), //uuid
@@ -254,6 +255,10 @@ class _PackageDetailState extends State<PackageDetail> {
                         height: 250.0,
                         width: MediaQuery.of(context).size.width - 40.0,
                         fit: BoxFit.cover,
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return const FlutterLogo();
+                        },
                       ),
                     ),
                   );

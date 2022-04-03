@@ -1,37 +1,39 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:travelapp/authentication/userauthentication.dart';
-import 'package:travelapp/model/paymentmodel.dart';
-import 'package:travelapp/model/placemodel.dart';
 import 'package:travelapp/model/usermodel.dart';
-import 'package:travelapp/utils/utils.dart';
-import 'package:travelapp/widgets/packages.dart';
 import 'package:uuid/uuid.dart';
+
+import '../authentication/userauthentication.dart';
 
 DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
 
-DatabaseReference usersReference = databaseReference.child('users');
+CollectionReference usersCollection =
+    FirebaseFirestore.instance.collection('users');
+
 CollectionReference requestedPackage =
     FirebaseFirestore.instance.collection('requestedPackage');
 Stream<QuerySnapshot> requestPackageStream =
     FirebaseFirestore.instance.collection('requestedPackage').snapshots();
 
 class Database {
-  Future<void> getCurrentUserData() async {
-    return await FirebaseFirestore.instance
+  Future<Stream> getCurrentUserData() async {
+    final userData = await FirebaseFirestore.instance
         .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .doc(user!.uid)
         .get()
         .then((value) {
       userDetail = UserModel.fromMap(value.data());
       print(value.data());
     });
+    return userData;
   }
 
   Future<void> requestPackage(
       DateTime? date,
+      // TimeOfDay? time,
       int people,
       // String paymentId,
       String userId,
@@ -46,6 +48,7 @@ class Database {
         .doc(uid)
         .set({
           'date': date,
+          // 'time': time,
           'people': people,
           'paymentId': idPayment,
           'userId': userId,
@@ -73,10 +76,28 @@ class Database {
   //   });
   // }
 
-  Future<void> deleteUser(String requestId) {
+  Future<void> deleteRequest(String requestId) {
     return requestedPackage
         .doc(requestId)
         .delete()
+        .then((value) => print("User Deleted"))
+        .catchError((error) => print("Failed to delete user: $error"));
+  }
+
+  // Future<void> deleteRequestAfterDate() {
+  //   return requestedPackage
+  //       .where(
+  //         'date',
+  //         isLessThanOrEqualTo: DateTime.now().day,
+  //       )
+  //       .get()
+  //       .then((value) => value.docs.forEach((doc) => doc.reference.delete()));
+  // }
+
+  Future<void> updatePhoneNo(String userId) {
+    return usersCollection
+        .doc(userId)
+        .update({})
         .then((value) => print("User Deleted"))
         .catchError((error) => print("Failed to delete user: $error"));
   }

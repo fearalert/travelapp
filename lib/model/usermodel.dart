@@ -36,4 +36,4 @@ class UserModel {
   }
 }
 
-late UserModel userDetail;
+UserModel userDetail = UserModel();

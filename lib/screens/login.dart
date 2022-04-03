@@ -337,7 +337,7 @@ class EnterPhoneNumber extends StatelessWidget {
   Future<String?> _handlePhone() async {
     final FormState? form = _formKey.currentState;
     if (form!.validate()) {
-      form.save();
+      // form.save();
 
       Get.dialog(
         Column(
@@ -352,6 +352,8 @@ class EnterPhoneNumber extends StatelessWidget {
         ),
       );
       userAuthentication.postDetailsToFirestore();
+      logInController.emailController.text = ' ';
+      logInController.passwordController.text = ' ';
       Get.toNamed(HomePage.id);
       return null;
     }

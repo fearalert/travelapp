@@ -49,8 +49,6 @@ class MyPackages extends StatelessWidget {
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
-                // database.deleteRequestAfterDate();
-
                 return Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Container(

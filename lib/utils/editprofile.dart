@@ -15,7 +15,10 @@ editProfile() async {
     await usersCollection.doc(user!.uid).update({
       'name': textController.nameController.text.trim(),
     });
-    getSnackBar(title: 'SUCCESS!', message: 'Your username was changed');
+    getSnackBar(
+        title: 'SUCCESS!',
+        message: 'Your username was changed',
+        color: Colors.green.shade300);
     textController.phoneController.clear();
     textController.nameController.clear();
     return;

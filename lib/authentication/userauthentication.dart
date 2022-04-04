@@ -229,7 +229,7 @@ class UserAuthentication {
         userModel.email = user!.email;
         userModel.id = user!.uid;
         userModel.name = user!.displayName;
-        userModel.phoneNo = user!.phoneNumber;
+        userModel.phoneNo = registrationController.phoneController.text;
         userModel.profileUrl = user!.photoURL;
         await FirebaseFirestore.instance
             .collection("users")

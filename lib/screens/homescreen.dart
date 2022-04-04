@@ -1,5 +1,7 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-
+import 'package:travelapp/model/database.dart';
+import 'package:travelapp/model/notificationhandler.dart';
 import 'package:travelapp/navigationtab/homepage.dart';
 import 'package:travelapp/navigationtab/mypackages.dart';
 import 'package:travelapp/navigationtab/profile.dart';
@@ -20,38 +22,35 @@ class _MainScreenState extends State<MainScreen>
 
   @override
   void initState() {
-    // FirebaseMessaging.onMessage.listen((message) {
-    //   print(message.notification.title);
-    // });
+    FirebaseMessaging.onMessage.listen((message) {
+      print(message.notification!.title);
+    });
 
     super.initState();
     tabController = TabController(length: 3, vsync: this);
-    // notificationHandler.onMessageHandler();
+    notificationHandler.onMessageHandler();
     // resolveToken();
   }
 
-  // resolveToken() async {
-  //   try {
-  //     String token = await database.getMyToken();
-  //     String deviceToken = await FirebaseMessaging.instance.getToken();
+  resolveToken() async {
+    try {
+      // String token = await database.getMyToken();
+      String? token = await FirebaseMessaging.instance.getToken();
 
-  //     if (token == null || token == '' || token != deviceToken) {
-  //       // String token = await FirebaseMessaging.instance.getToken();
-  //       database.saveToken(deviceToken);
-  //       print(deviceToken);
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+      if (token == null || token == '') {
+        database.saveToken(token!);
+        print(token);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   void dispose() {
     super.dispose();
     tabController.dispose();
   }
-
-  // final ServiceHandler serviceHandler = ServiceHandler();
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +60,9 @@ class _MainScreenState extends State<MainScreen>
         physics: const NeverScrollableScrollPhysics(),
         // dragStartBehavior: DragStartBehavior.start,
         controller: tabController,
-        children: [
-          const HomePage(),
-          const MyPackages(),
+        children: const [
+          HomePage(),
+          MyPackages(),
           Profile(),
         ],
       ),

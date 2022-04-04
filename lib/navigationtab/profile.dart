@@ -506,7 +506,9 @@ class _ProfileState extends State<Profile> {
                                       ],
                                     ),
                                   );
-                                  Get.toNamed(LogInScreen.id);
+                                  // Get.offAndToNamed(LogInScreen.id);
+                                  Get.offNamedUntil(
+                                      LogInScreen.id, (route) => true);
                                 },
                                 text: 'Sign Out',
                                 height: 55.0,

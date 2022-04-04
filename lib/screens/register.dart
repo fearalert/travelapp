@@ -172,6 +172,10 @@ class Registration extends StatelessWidget {
       form.save();
       userAuthentication.signUp(registrationController.emailController.text,
           registrationController.passwordController.text);
+      registrationController.nameController.clear();
+      registrationController.emailController.clear();
+      registrationController.phoneController.clear();
+      registrationController.passwordController.clear();
     }
   }
 }

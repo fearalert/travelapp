@@ -2,6 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:travelapp/components/customTextField.dart';
+import 'package:travelapp/constants/constants.dart';
+import 'package:travelapp/model/placemodel.dart';
+import 'package:travelapp/screens/login.dart';
+import 'package:travelapp/utils/search.dart';
+import 'package:travelapp/utils/utils.dart';
 import 'package:travelapp/widgets/packages.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,6 +19,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String? searchName = " ";
   final Stream<QuerySnapshot> _packagestream =
       FirebaseFirestore.instance.collection('packages').snapshots();
   @override
@@ -26,32 +33,120 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  CategoryPageHeader(),
-                  CategoryUserImage(),
-                ],
+              Container(
+                decoration: const BoxDecoration(
+                  color: kTextfieldColor,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: const [
+                        CategoryPageHeader(),
+                        CategoryUserImage(),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    // Row(
+                    //   children: [
+                    //     Padding(
+                    //       padding: const EdgeInsets.only(left: 18.0),
+                    //       child: GestureDetector(
+                    //           onTap: () {
+                    //             Get.toNamed(SearchPage.id);
+                    //           },
+                    //           child: Container(
+                    //             height: 45.0,
+                    //             width: 260,
+                    //             decoration: const BoxDecoration(
+                    //               color: Colors.white,
+                    //               borderRadius:
+                    //                   BorderRadius.all(Radius.circular(12)),
+                    //             ),
+                    //             child: Center(
+                    //               child: Padding(
+                    //                 padding: const EdgeInsets.all(8.0),
+                    //                 child: Row(
+                    //                   children: [
+                    //                     const Icon(Icons.search),
+                    //                     Text('     Search Here',
+                    //                         style: GoogleFonts.laila(
+                    //                           color: Colors.black,
+                    //                           fontSize: 12.0,
+                    //                           fontWeight: FontWeight.normal,
+                    //                         )),
+                    //                   ],
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           )),
+                    //     ),
+                    //   ],
+                    // ),
+                    // const SizedBox(
+                    //   height: 15,
+                    // ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                          autofocus: false,
+                          obscureText: false,
+                          controller: searchController,
+                          keyboardType: TextInputType.text,
+                          onChanged: (value) {
+                            // searchName = value;
+                          },
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.search),
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                            hintText: 'Search Here',
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: kPrimaryColor, width: 1.5),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          )),
+                    )
+                  ],
+                ),
               ),
-              const SizedBox(
-                height: 30,
-              ),
-              // CustomTextField(
-              //   icon: Icons.search,
-              //   hintText: "Type to Search",
-              //   textController: searchController,
-              //   isNumber: false,
-              // ),
-              // const SizedBox(
-              //   height: 15,
-              // ),
-
               const SizedBox(
                 height: 25,
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text('Explore Packages',
+                      style: GoogleFonts.laila(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w600,
+                      )),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: const [
+                  SizedBox(width: 160, child: Divider()),
+                ],
+              ),
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: _packagestream,
+                  stream:
+                      // (searchName != " " && searchName!.isNotEmpty)
+                      //     ? firebaseFirestore
+                      //         .collection('packages')
+                      //         .where('placeName', isEqualTo: searchName)
+                      //         .snapshots()
+                      //     :
+                      _packagestream,
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasError) {
@@ -72,7 +167,7 @@ class _HomePageState extends State<HomePage> {
                           child: Container(
                             decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(15),
+                                borderRadius: BorderRadius.circular(0),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.1),
@@ -140,11 +235,19 @@ class CategoryUserImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.only(bottom: 20.0),
-      child: CircleAvatar(
-          // backgroundColor: Colors.red[200],
+    return Padding(
+        padding: const EdgeInsets.only(bottom: 20.0),
+        child: CircleAvatar(
+          child: IconButton(
+            onPressed: () {
+              userAuthentication.logOut();
+              Get.offAndToNamed(LogInScreen.id);
+            },
+            icon: const Icon(
+              Icons.logout_rounded,
+              // backgroundColor: Colors.red[200],
+            ),
           ),
-    );
+        ));
   }
 }

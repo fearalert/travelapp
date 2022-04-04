@@ -352,8 +352,8 @@ class EnterPhoneNumber extends StatelessWidget {
         ),
       );
       userAuthentication.postDetailsToFirestore();
-      logInController.emailController.text = ' ';
-      logInController.passwordController.text = ' ';
+      logInController.emailController.clear();
+      logInController.passwordController.clear();
       Get.toNamed(HomePage.id);
       return null;
     }

@@ -103,7 +103,7 @@ class Database {
         .catchError((error) => print("Failed to delete user: $error"));
   }
 
-  Future<void> deleteRequestAfterDate(String requestId) {
+  Future<void> deleteRequestAfterDate() {
     return requestedPackage
         .where(
           'date',

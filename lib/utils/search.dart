@@ -1,115 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travelapp/constants/constants.dart';
-import 'package:travelapp/model/placemodel.dart';
 import 'package:travelapp/widgets/packages.dart';
-
-final Stream<QuerySnapshot> packagesStream =
-    FirebaseFirestore.instance.collection('packages').snapshots();
-
-class SearchFunctionality extends SearchDelegate<String> {
-  SearchFunctionality({Key? key});
-  List<String?> data = [];
-  String? selectedResult;
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: const Icon(Icons.close),
-        onPressed: () {
-          query = " ";
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget? buildLeading(BuildContext context) {
-    return IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          Navigator.pop(context);
-        });
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    return Center(
-      child: Text(selectedResult!),
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    List<String?> datafromCloud = [];
-    query.isEmpty
-        ? datafromCloud = data
-        : datafromCloud.addAll(data.where(
-            (element) => element.toString().contains(query.toLowerCase())));
-
-    return StreamBuilder<QuerySnapshot>(
-      stream: packagesStream,
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return const Center(child: Text('Something went wrong'));
-        }
-
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: Text("Loading"));
-        }
-
-        return ListView(
-          children: snapshot.data!.docs.map((DocumentSnapshot document) {
-            Map<String, dynamic> data =
-                document.data()! as Map<String, dynamic>;
-            return Padding(
-              padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        spreadRadius: 5,
-                        blurRadius: 20,
-                        offset:
-                            const Offset(3, 7), // changes position of shadow
-                      ),
-                    ]),
-                child: ListTile(
-                  onTap: () {
-                    Get.off(PackageDetail(
-                      receivedMap: data,
-                    ));
-                  },
-                  leading: CircleAvatar(
-                    radius: 25,
-                    backgroundImage: Image.network(
-                      data['imgUrl'],
-                      fit: BoxFit.cover,
-                      scale: 1.0,
-                      errorBuilder: (BuildContext context, Object exception,
-                          StackTrace? stackTrace) {
-                        return const Icon(Icons.do_not_disturb);
-                      },
-                    ).image,
-                  ),
-                  title: Text(data['packageName']),
-                  subtitle: Text(data['locationName']),
-                  trailing: Text(data['price'].toString()),
-                ),
-              ),
-            );
-          }).toList(),
-        );
-      },
-    );
-  }
-}
 
 class SearchPage extends StatefulWidget {
   static const id = '/search';
@@ -120,53 +15,108 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final Stream<QuerySnapshot> packagestream =
+  String search = '';
+  final Stream<QuerySnapshot> packagesStream =
       FirebaseFirestore.instance.collection('packages').snapshots();
-
-  String? searchName = "";
-
   @override
   Widget build(BuildContext context) {
-    final searchController = TextEditingController();
+    TextEditingController searchController = TextEditingController();
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(239, 255, 255, 255),
+      appBar: AppBar(
+        title: Text(
+          'Search Page',
+          style: GoogleFonts.roboto(
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: kPrimaryColor,
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
           child: Column(
             children: [
-              TextField(
-                  obscureText: false,
-                  controller: searchController,
-                  keyboardType: TextInputType.text,
-                  onChanged: (val) {
-                    setState(() {
-                      searchName = val;
-                    });
-                  },
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
-                    contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                    hintText: 'Search for a package',
-                    border: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: kPrimaryColor, width: 1.5),
-                      borderRadius: BorderRadius.circular(10),
+              Container(
+                decoration: const BoxDecoration(
+                  color: kTextfieldColor,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                          autofocus: false,
+                          obscureText: false,
+                          controller: searchController,
+                          keyboardType: TextInputType.text,
+                          onChanged: (value) {
+                            // print(value);
+                            // setState(() {
+                            //   search = value;
+                            // });
+                          },
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.search),
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                            hintText: 'Search Here',
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: kPrimaryColor, width: 1.5),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          )),
                     ),
-                  )),
+                    TextButton(
+                        onPressed: () {
+                          setState(() {
+                            search = searchController.text.toString();
+                            if (kDebugMode) {
+                              print(search);
+                            }
+                          });
+                        },
+                        child: const Text('search')),
+                  ],
+                ),
+              ),
               const SizedBox(
-                height: 30,
+                height: 25,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text('Results for: $search',
+                      style: GoogleFonts.laila(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w600,
+                      )),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: const [
+                  SizedBox(width: 160, child: Divider()),
+                ],
               ),
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: (searchName != "")
-                      ? firebaseFirestore
+                  stream: (search != '' && search.isNotEmpty)
+                      ? FirebaseFirestore.instance
                           .collection('packages')
-                          .where('placeName', isEqualTo: searchName)
+                          .where('locationName', isEqualTo: search)
+                          // .where('packageName', isEqualTo: search)
                           .snapshots()
-                      : packagestream,
+                      : FirebaseFirestore.instance
+                          .collection('packages')
+                          .snapshots(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasError) {
@@ -187,7 +137,7 @@ class _SearchPageState extends State<SearchPage> {
                           child: Container(
                             decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(15),
+                                borderRadius: BorderRadius.circular(0),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.1),

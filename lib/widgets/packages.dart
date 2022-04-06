@@ -1,6 +1,10 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:travelapp/components/buttons.dart';
@@ -10,6 +14,8 @@ import 'package:travelapp/model/database.dart';
 import 'package:travelapp/screens/homescreen.dart';
 import 'package:travelapp/utils/utils.dart';
 import 'package:travelapp/widgets/snackbar.dart';
+
+Key? key;
 
 class PackageDetail extends StatefulWidget {
   final Map<String, dynamic> receivedMap;
@@ -203,6 +209,46 @@ class _PackageDetailState extends State<PackageDetail> {
                                   );
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(successsnackBar);
+                                  String? token = await database.getToken(
+                                      widget.receivedMap['packageId']);
+                                  String? name = await database.getUserName();
+                                  if (kDebugMode) {
+                                    print(token);
+                                  }
+                                  try {
+                                    http.post(
+                                        Uri.parse(
+                                            'https://fcm.googleapis.com/fcm/send'),
+                                        headers: <String, String>{
+                                          'Content-Type':
+                                              'application/json; charset=UTF-8',
+                                          'Authorization': "$key",
+                                        },
+                                        body: jsonEncode(
+                                          {
+                                            "notification": {
+                                              "body": "New order from" + name!,
+                                              "title": "Bookings Alert",
+                                              "android_channel_id":
+                                                  "high_importance_channel"
+                                            },
+                                            "priority": "high",
+                                            "data": {
+                                              "click_action":
+                                                  "FLUTTER_NOTIFICATION_CLICK",
+                                              "status": "done"
+                                            },
+                                            "to": "$token"
+                                          },
+                                        ));
+                                    if (kDebugMode) {
+                                      print('FCM request for device sent!');
+                                    }
+                                  } catch (e) {
+                                    if (kDebugMode) {
+                                      print(e);
+                                    }
+                                  }
                                 },
                                 onFailure: (fa) {
                                   const failedsnackBar = SnackBar(

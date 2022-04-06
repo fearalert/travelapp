@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:travelapp/model/database.dart';
 import 'package:travelapp/model/notificationhandler.dart';
@@ -23,27 +24,15 @@ class _MainScreenState extends State<MainScreen>
   @override
   void initState() {
     FirebaseMessaging.onMessage.listen((message) {
-      print(message.notification!.title);
+      if (kDebugMode) {
+        print(message.notification!.title);
+      }
     });
 
     super.initState();
     tabController = TabController(length: 3, vsync: this);
     notificationHandler.onMessageHandler();
-    // resolveToken();
-  }
-
-  resolveToken() async {
-    try {
-      // String token = await database.getMyToken();
-      String? token = await FirebaseMessaging.instance.getToken();
-
-      if (token == null || token == '') {
-        database.saveToken(token!);
-        print(token);
-      }
-    } catch (e) {
-      print(e);
-    }
+    notificationHandler.resolveToken();
   }
 
   @override
@@ -54,11 +43,9 @@ class _MainScreenState extends State<MainScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Get.put(TextController());
     return Scaffold(
       body: TabBarView(
         physics: const NeverScrollableScrollPhysics(),
-        // dragStartBehavior: DragStartBehavior.start,
         controller: tabController,
         children: const [
           HomePage(),

@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:travelapp/model/chat.dart';
 import 'package:travelapp/model/usermodel.dart';
 import 'package:uuid/uuid.dart';
@@ -16,10 +17,10 @@ CollectionReference usersCollection =
 
 CollectionReference requestedPackage =
     FirebaseFirestore.instance.collection('requestedPackage');
-Stream<QuerySnapshot> requestPackageStream =
-    FirebaseFirestore.instance.collection('requestedPackage').where('userId', isEqualTo: user!.uid).snapshots();
-
-     
+Stream<QuerySnapshot> requestPackageStream = FirebaseFirestore.instance
+    .collection('requestedPackage')
+    .where('userId', isEqualTo: user!.uid)
+    .snapshots();
 
 class Database {
   Future<Stream> getCurrentUserData() async {
@@ -89,10 +90,6 @@ class Database {
   //   });
   // }
 
-  void saveToken(String token) async {
-    await usersCollection.doc(user!.uid).update({'token': token});
-  }
-
   Future<void> deleteRequest(String requestId) {
     return requestedPackage
         .doc(requestId)
@@ -120,33 +117,109 @@ class Database {
   }
 
   Future<void> addPayment(Map<String, dynamic> data) {
-// final paymentRef = FirebaseFirestore.instance.collection('payments').withConverter<PaymentSuccessModel>(
-//       fromFirestore: (snapshot, _) => PaymentSuccessModel.fromMap(snapshot.data()!),
-//       toFirestore: (paymentsuccessmodel, _) => paymentsuccessmodel.toMap(),
-//     );
-
-    //    return  paymentRef.add(
-    //  data);
-
     return FirebaseFirestore.instance.collection('payments').doc().set(data);
   }
 
-  Future<void> sendMessage(String text, String packageName)async{
-   final messageRef =  FirebaseFirestore.instance.collection('messages').doc(user!.uid).collection(packageName);
-  final message = Chat(
-    message: text,
-    userName: userDetail.name.toString(),
-    userImg : userDetail.profileUrl.toString(),
-    time: Timestamp.now(),
-    uid: user!.uid,
-    
-  );
+  Future<void> sendMessage(String text, String packageName) async {
+    final messageRef = FirebaseFirestore.instance
+        .collection('messages')
+        .doc(user!.uid)
+        .collection(packageName);
+    final message = Chat(
+      message: text,
+      userName: userDetail.name.toString(),
+      time: Timestamp.now(),
+      uid: user!.uid,
+    );
 
-  await messageRef.add(message.toMap());
+    await messageRef.add(message.toMap());
+  }
 
- }
+  Future<String?> getMyToken() async {
+    final userQuery = await FirebaseFirestore.instance
+        .collection('users')
+        .where('id', isEqualTo: user!.uid)
+        .get();
 
+    final userQueryDocsSnap = userQuery.docs[0];
+    String? token = userQueryDocsSnap.data()['token'];
+    return token;
+  }
 
+  void saveToken(String token) async {
+    final userQuery = await FirebaseFirestore.instance
+        .collection('users')
+        .where('id', isEqualTo: user!.uid)
+        .get();
+    final userQueryDocsSnap = userQuery.docs[0];
+    final userRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userQueryDocsSnap.id);
+    await userRef.update({'token': token});
+
+    if (kDebugMode) {
+      print("Token saved");
+    }
+  }
+
+  getUserName() {
+    return userDetail.name;
+  }
+
+  Future<String?> getToken(String? uid) async {
+    final userQuery = await FirebaseFirestore.instance
+        .collection('users')
+        .where('id', isEqualTo: user!.uid)
+        .get();
+
+    final userQueryDocsSnap = userQuery.docs[0];
+
+    return userQueryDocsSnap.data()['token'];
+  }
+
+  Future<void> changeRatingState({String? requestKey, bool? state}) async {
+    final userQuery = await FirebaseFirestore.instance
+        .collection('requestedPackage')
+        .where('requestedId', isEqualTo: requestKey)
+        .get();
+
+    final userQueryDocsSnap = userQuery.docs[0];
+    final userRef = FirebaseFirestore.instance
+        .collection('requestedPackage')
+        .doc(userQueryDocsSnap.id);
+    await userRef.update({'ratingState': state});
+
+    if (kDebugMode) {
+      print("Rating state changed");
+    }
+  }
+
+  Future<void> updateRatingAndReview({
+    String? packageId,
+    String? review,
+    double? rating,
+  }) async {
+    final packageQuery = await FirebaseFirestore.instance
+        .collection('packages')
+        .where('id', isEqualTo: packageId)
+        .get();
+    final packageQueryDocsSnap = packageQuery.docs[0];
+    final packageRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(packageQueryDocsSnap.id);
+    await packageRef.update({
+      'rating': rating,
+      'review': review,
+    });
+
+    double avgRating = (packageQueryDocsSnap.data()['rating'] + rating) / 2;
+    await packageRef.update({'rating': avgRating});
+    if (kDebugMode) {
+      print("Rating and review updated");
+    }
+
+    if (review!.isNotEmpty) {}
+  }
 }
 
 Database database = Database();

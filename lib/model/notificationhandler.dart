@@ -1,5 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:travelapp/model/database.dart';
 
 class NotificationHandler {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -26,6 +28,24 @@ class NotificationHandler {
     var initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  resolveToken() async {
+    try {
+      String? token = await database.getMyToken();
+      String? deviceToken = await FirebaseMessaging.instance.getToken();
+
+      if (token == null || token == '' || token != deviceToken) {
+        database.saveToken(deviceToken!);
+        if (kDebugMode) {
+          print(deviceToken);
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
   }
 
   Future<void> onMessageHandler() async {

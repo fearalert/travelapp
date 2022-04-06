@@ -1,32 +1,25 @@
-
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
-import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:travelapp/authentication/userauthentication.dart';
 import 'package:travelapp/model/database.dart';
-import 'package:travelapp/navigationtab/homepage.dart';
-import 'package:travelapp/navigationtab/mypackages.dart';
-import 'package:travelapp/screens/welcome.dart';
+import 'package:travelapp/widgets/packages.dart';
 
-import '../constants/constants.dart';
 import 'homescreen.dart';
-
 
 final _firestore = FirebaseFirestore.instance;
 User? loggedInuser;
 final focusNode = FocusNode();
 
 class ChatScreen extends StatefulWidget {
-
- final String packageName;
-  ChatScreen({Key? key, required this.packageName});
+  final String packageName;
+  const ChatScreen({Key? key, required this.packageName});
   static String id = 'chat_screen';
 
   @override
@@ -34,7 +27,6 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  
   final controller = TextEditingController();
   final _auth = FirebaseAuth.instance;
   bool isEmojiVisible = false;
@@ -45,23 +37,15 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     getCurrentUser();
-   
   }
 
-  
-
   Future<bool> onBackPress() {
-  
-      Navigator.pop(context);
-
+    Navigator.pop(context);
 
     return Future.value(false);
   }
 
-  @override
-
-
-  void getCurrentUser() {
+  Future<void> getCurrentUser() async {
     try {
       final user = _auth.currentUser;
       if (user != null) {
@@ -73,23 +57,23 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
-   
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon:const  Icon(Icons.arrow_back_ios_rounded, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back_ios_rounded, color: Colors.black87),
           onPressed: () {
             Get.back();
-             Get.toNamed(MainScreen.id);
+            Get.toNamed(MainScreen.id);
           },
         ),
-       
-        title: const Text('Messages', style: TextStyle(color: Colors.black87,),),
+        title: const Text(
+          'Messages',
+          style: TextStyle(
+            color: Colors.black87,
+          ),
+        ),
         backgroundColor: Colors.white,
       ),
       body: SafeArea(
@@ -104,7 +88,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 padding: const EdgeInsets.all(10),
                 child: Container(
                   width: double.infinity,
-                  
                   decoration: const BoxDecoration(
                       // border:  Border(
                       //     top:
@@ -113,56 +96,106 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                  
                       Flexible(
                         child: TextField(
-                          
                           textInputAction: TextInputAction.send,
                           keyboardType: TextInputType.multiline,
                           focusNode: focusNode,
                           onSubmitted: (value) {
                             controller.clear();
-                            database.sendMessage(messageText, widget.packageName);
+                            database.sendMessage(
+                                messageText, widget.packageName);
+                            messageText = null;
                           },
                           maxLines: null,
                           controller: controller,
                           onChanged: (value) {
                             messageText = value;
                           },
-                      decoration: InputDecoration(
-                           hintText: '    Type Something...',
-                             hintStyle: TextStyle(color: Color.fromARGB(255, 31, 31, 32)),
-                            fillColor: Color.fromARGB(255, 227, 219, 219),
-                            filled: true,
-                            
-                            contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                            
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(20.0),
-                            )),
-                          style:
-                              TextStyle(color: Colors.blueGrey, fontSize: 15.0),
-                                                                                   
+                          decoration: InputDecoration(
+                              hintText: '    Type Something...',
+                              hintStyle: const TextStyle(
+                                  color: Color.fromARGB(255, 31, 31, 32)),
+                              fillColor:
+                                  const Color.fromARGB(255, 227, 219, 219),
+                              filled: true,
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                              border: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(20.0),
+                              )),
+                          style: const TextStyle(
+                              color: Colors.blueGrey, fontSize: 15.0),
                         ),
                       ),
                       Material(
-                        child:  Container(
-                          margin:  const EdgeInsets.symmetric(horizontal: 8.0),
-                          child:  IconButton(
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: IconButton(
                             icon: const Icon(Icons.send),
-                            onPressed: () {
+                            onPressed: () async {
                               controller.clear();
-                             database.sendMessage(messageText, widget.packageName);
+                              try {
+                                await database.sendMessage(
+                                    messageText, widget.packageName);
+                                messageText = null;
 
+                                String? token =
+                                    await database.getToken(user!.uid);
+                                String? receiver = await database.getUserName();
+                                try {
+                                  http.post(
+                                      Uri.parse(
+                                          'https://fcm.googleapis.com/fcm/send'),
+                                      headers: <String, String>{
+                                        'Content-Type':
+                                            'application/json; charset=UTF-8',
+                                        'Authorization': "$key",
+                                      },
+                                      body: jsonEncode(
+                                        {
+                                          "notification": {
+                                            "body":
+                                                "You have a new message from " +
+                                                    receiver!,
+                                            "title": "New Message",
+                                            "android_channel_id":
+                                                "high_importance_channel"
+                                          },
+                                          "priority": "high",
+                                          "data": {
+                                            "click_action":
+                                                "FLUTTER_NOTIFICATION_CLICK",
+                                            "status": "done"
+                                          },
+                                          "to": "$token"
+                                        },
+                                      ));
+                                  if (kDebugMode) {
+                                    print('FCM request for device sent!');
+                                  }
+                                } catch (e) {
+                                  if (kDebugMode) {
+                                    print(e);
+                                  }
+                                }
+                              } catch (error) {
+                                if (kDebugMode) {
+                                  print(error);
+                                }
+                              }
                             },
                             color: Colors.blueGrey,
                           ),
@@ -173,15 +206,13 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
               ),
-               Container(),
+              Container(),
             ],
           ),
         ),
       ),
     );
   }
-
-
 }
 
 String giveUsername(String email) {
@@ -190,38 +221,42 @@ String giveUsername(String email) {
 
 class MessagesStream extends StatelessWidget {
   final String packageName;
-  const  MessagesStream({Key?key, required this.packageName});
+  const MessagesStream({Key? key, required this.packageName});
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
-          .collection('messages').doc(user!.uid.toString()).collection(packageName)
+          .collection('messages')
+          .doc(user!.uid.toString())
+          .collection(packageName)
           .orderBy("time", descending: true)
-          .snapshots()  ,
+          .snapshots(),
       builder: (context, snapshot) {
         // If we do not have data yet, show a progress indicator.
         if (!snapshot.hasData) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
-      // if(snapshot.hasData){
-      //   print(snapshot.data);
-      // }
+        // if(snapshot.hasData){
+        //   print(snapshot.data);
+        // }
 
         return Expanded(
           child: ListView(
             reverse: true,
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
-            children:snapshot.data!.docs.map((DocumentSnapshot document) {
-          Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-            return  MessageBubble(
-            sender: data['userName'],
-            text: data['message'],
-            timestamp: data['time'],
-            isMe: loggedInuser!.uid == data['uid'],
-          );
-        }).toList(),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+            children: snapshot.data!.docs.map((DocumentSnapshot document) {
+              Map<String, dynamic> data =
+                  document.data()! as Map<String, dynamic>;
+              return MessageBubble(
+                sender: data['userName'],
+                text: data['message'],
+                timestamp: data['time'],
+                isMe: loggedInuser!.uid == data['uid'],
+              );
+            }).toList(),
           ),
         );
       },
@@ -230,7 +265,13 @@ class MessagesStream extends StatelessWidget {
 }
 
 class MessageBubble extends StatelessWidget {
-  MessageBubble({this.sender, this.text, this.timestamp, this.isMe});
+  const MessageBubble({
+    Key? key,
+    this.sender,
+    this.text,
+    this.timestamp,
+    this.isMe,
+  }) : super(key: key);
   final String? sender;
   final String? text;
   final Timestamp? timestamp;
@@ -241,12 +282,11 @@ class MessageBubble extends StatelessWidget {
     final dateTime =
         DateTime.fromMillisecondsSinceEpoch(timestamp!.seconds * 1000);
     return Padding(
-      padding: EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment:
             isMe! ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
-         
           Material(
             borderRadius: isMe!
                 ? const BorderRadius.only(
@@ -254,16 +294,16 @@ class MessageBubble extends StatelessWidget {
                     topLeft: Radius.circular(20.0),
                     bottomRight: Radius.circular(20.0),
                   )
-                : const  BorderRadius.only(
+                : const BorderRadius.only(
                     bottomLeft: Radius.circular(20.0),
                     topRight: Radius.circular(20.0),
                     bottomRight: Radius.circular(20.0),
                   ),
             elevation: 5.0,
-            color:
-                isMe! ?  Color(0xff1F72F6): Colors.grey ,
+            color: isMe! ? const Color(0xff1F72F6) : Colors.grey,
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
               child: Column(
                 crossAxisAlignment:
                     isMe! ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -275,23 +315,22 @@ class MessageBubble extends StatelessWidget {
                       color: isMe! ? Colors.white : Colors.black54,
                     ),
                   ),
-                  
                 ],
               ),
             ),
           ),
           Padding(
-                    padding: const EdgeInsets.only(top: 6.0),
-                    child: Text(
-                      "${DateFormat('h:mm a').format(dateTime)}",
-                      style: TextStyle(
-                        fontSize: 9.0,
-                        color: isMe!
-                            ? Colors.black87.withOpacity(0.5)
-                            : Colors.black54.withOpacity(0.5),
-                      ),
-                    ),
-                  ),
+            padding: const EdgeInsets.only(top: 6.0),
+            child: Text(
+              "${DateFormat('h:mm a').format(dateTime)}",
+              style: TextStyle(
+                fontSize: 9.0,
+                color: isMe!
+                    ? Colors.black87.withOpacity(0.5)
+                    : Colors.black54.withOpacity(0.5),
+              ),
+            ),
+          ),
         ],
       ),
     );

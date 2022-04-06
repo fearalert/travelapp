@@ -21,8 +21,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-   final userController = Get.put(UserController());
-  String? searchName = " ";
   final Stream<QuerySnapshot> _packagestream =
       FirebaseFirestore.instance.collection('packages').snapshots();
   @override
@@ -30,7 +28,7 @@ class _HomePageState extends State<HomePage> {
     final searchController = TextEditingController();
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(239, 255, 255, 255),
+      backgroundColor: const Color(0xffffffff),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
@@ -56,68 +54,37 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(
                       height: 10,
                     ),
-                    // Row(
-                    //   children: [
-                    //     Padding(
-                    //       padding: const EdgeInsets.only(left: 18.0),
-                    //       child: GestureDetector(
-                    //           onTap: () {
-                    //             Get.toNamed(SearchPage.id);
-                    //           },
-                    //           child: Container(
-                    //             height: 45.0,
-                    //             width: 260,
-                    //             decoration: const BoxDecoration(
-                    //               color: Colors.white,
-                    //               borderRadius:
-                    //                   BorderRadius.all(Radius.circular(12)),
-                    //             ),
-                    //             child: Center(
-                    //               child: Padding(
-                    //                 padding: const EdgeInsets.all(8.0),
-                    //                 child: Row(
-                    //                   children: [
-                    //                     const Icon(Icons.search),
-                    //                     Text('     Search Here',
-                    //                         style: GoogleFonts.laila(
-                    //                           color: Colors.black,
-                    //                           fontSize: 12.0,
-                    //                           fontWeight: FontWeight.normal,
-                    //                         )),
-                    //                   ],
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //           )),
-                    //     ),
-                    //   ],
-                    // ),
-                    // const SizedBox(
-                    //   height: 15,
-                    // ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                          autofocus: false,
-                          obscureText: false,
-                          controller: searchController,
-                          keyboardType: TextInputType.text,
-                          onChanged: (value) {
-                            // searchName = value;
-                          },
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.search),
-                            contentPadding:
-                                const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                            hintText: 'Search Here',
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: kPrimaryColor, width: 1.5),
-                              borderRadius: BorderRadius.circular(10),
+                    GestureDetector(
+                        onTap: () {
+                          Get.toNamed(SearchPage.id);
+                        },
+                        child: Container(
+                          height: 45.0,
+                          width: 260,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                          ),
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.search),
+                                  Text('     Search Here',
+                                      style: GoogleFonts.laila(
+                                        color: Colors.black,
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.normal,
+                                      )),
+                                ],
+                              ),
                             ),
-                          )),
-                    )
+                          ),
+                        )),
+                    const SizedBox(
+                      height: 15,
+                    ),
                   ],
                 ),
               ),

@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/model/database.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 import 'package:travelapp/screens/chats.dart';
 import 'package:travelapp/widgets/snackbar.dart';
 
@@ -49,7 +53,7 @@ class MyPackages extends StatelessWidget {
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
-                database.deleteRequestAfterDate();
+
                 return Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Container(
@@ -108,13 +112,53 @@ class MyPackages extends StatelessWidget {
                                     children: [
                                       GestureDetector(
                                         onTap: () async {
+                                          String? token = await database
+                                              .getToken(data['requestedId']);
                                           await database.deleteRequest(
                                               data['requestedId']);
                                           getSnackBar(
                                             title: 'Request Delete',
                                             message:
                                                 'Request Deleted Successfully',
+                                            color: Colors.green.shade300,
                                           );
+                                          try {
+                                            http.post(
+                                                Uri.parse(
+                                                    'https://fcm.googleapis.com/fcm/send'),
+                                                headers: <String, String>{
+                                                  'Content-Type':
+                                                      'application/json; charset=UTF-8',
+                                                  'Authorization': "$key",
+                                                },
+                                                body: jsonEncode(
+                                                  {
+                                                    "notification": {
+                                                      "body":
+                                                          "Your request was cancelled",
+                                                      "title":
+                                                          "Request Cancelled",
+                                                      "android_channel_id":
+                                                          "high_importance_channel"
+                                                    },
+                                                    "priority": "high",
+                                                    "data": {
+                                                      "click_action":
+                                                          "FLUTTER_NOTIFICATION_CLICK",
+                                                      "status": "done"
+                                                    },
+                                                    "to": "$token"
+                                                  },
+                                                ));
+                                            if (kDebugMode) {
+                                              print(
+                                                  'FCM request for device sent!');
+                                            }
+                                          } catch (e) {
+                                            if (kDebugMode) {
+                                              print(e);
+                                            }
+                                          }
                                         },
                                         child: Container(
                                           height: 40.0,
@@ -153,7 +197,6 @@ class MyPackages extends StatelessWidget {
                                           Get.off(
                                             ChatScreen(
                                               packageName: data['packageId'],
-                                             
                                             ),
                                           );
                                         },

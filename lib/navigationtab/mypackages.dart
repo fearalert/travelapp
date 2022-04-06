@@ -13,9 +13,14 @@ import 'package:travelapp/screens/chats.dart';
 import 'package:travelapp/widgets/snackbar.dart';
 import 'package:rating_dialog/rating_dialog.dart';
 
-class MyPackages extends StatelessWidget {
+class MyPackages extends StatefulWidget {
   const MyPackages({Key? key}) : super(key: key);
 
+  @override
+  State<MyPackages> createState() => _MyPackagesState();
+}
+
+class _MyPackagesState extends State<MyPackages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,9 +119,9 @@ class MyPackages extends StatelessWidget {
                                       GestureDetector(
                                         onTap: () async {
                                           String? token = await database
-                                              .getToken(data['requestedId']);
-                                          await database
-                                              .deleteRequest(data['adminId']);
+                                              .getToken(data['adminId']);
+                                          await database.deleteRequest(
+                                              data['requestedId']);
                                           getSnackBar(
                                             title: 'Request Delete',
                                             message: 'Request Deleted for ' +
@@ -265,10 +270,14 @@ class MyPackages extends StatelessWidget {
                                                 onCancelled: () =>
                                                     print('cancelled'),
                                                 onSubmitted: (response) async {
-                                                  database.sendReview(
+                                                  await database.sendReview(
                                                       data['packageId'],
                                                       response.rating,
                                                       response.comment);
+
+                                                  await database.updateRequest(
+                                                      data['requestedId']);
+                                                  Get.back();
                                                 },
                                               );
                                             },

@@ -24,6 +24,7 @@ CollectionReference favouritesRef =
 Stream<QuerySnapshot> requestPackageStream = FirebaseFirestore.instance
     .collection('requestedPackage')
     .where('userId', isEqualTo: user!.uid)
+    .where('status', isEqualTo: 'RatingPending')
     .snapshots();
 
 class Database {
@@ -65,7 +66,7 @@ class Database {
           'packageId': packageId,
           'packageName': packageName,
           'packageImg': packageImg,
-          'status': 'pending',
+          'status': 'RatingPending',
           // 'price': placesDetails.price,
           'requestedId': uid,
           'userEmail': userDetail.email,
@@ -83,6 +84,17 @@ class Database {
         .delete()
         .then((value) => print("User Deleted"))
         .catchError((error) => print("Failed to delete user: $error"));
+  }
+
+//
+  Future<void> updateRequest(String requestId) {
+    return requestedPackage
+        .doc(requestId)
+        .update({
+          'status': 'rated',
+        })
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
   }
 
 //

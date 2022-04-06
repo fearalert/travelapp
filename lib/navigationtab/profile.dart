@@ -32,7 +32,6 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  
   File? _image;
   Future pickImageFromGallery() async {
     try {

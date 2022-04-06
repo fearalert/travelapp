@@ -19,8 +19,11 @@ class Favourite extends StatefulWidget {
 class _FavouriteState extends State<Favourite> {
   final Stream<QuerySnapshot> favouriteStream = FirebaseFirestore.instance
       .collection('favourites')
+      .doc(user!.uid)
+      .collection('newFavourites')
       .where('userId', isEqualTo: user!.uid)
       .snapshots();
+  // .where('userId', isEqualTo: user!.uid)
   @override
   Widget build(BuildContext context) {
     return Scaffold(

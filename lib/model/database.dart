@@ -21,6 +21,10 @@ CollectionReference requestedPackage =
     FirebaseFirestore.instance.collection('requestedPackage');
 CollectionReference favouritesRef =
     FirebaseFirestore.instance.collection('favourites');
+CollectionReference newFav = FirebaseFirestore.instance
+    .collection('favourites')
+    .doc(user!.uid)
+    .collection('newFavourites');
 Stream<QuerySnapshot> requestPackageStream = FirebaseFirestore.instance
     .collection('requestedPackage')
     .where('userId', isEqualTo: user!.uid)
@@ -48,9 +52,10 @@ class Database {
       int people,
       // String paymentId,
       String userId,
+      String adminId,
       String packageId,
       String packageName,
-      String packageImg) {
+      String packageImg) async {
     const uuid = Uuid();
     String uid = uuid.v4();
     String idPayment = uuid.v4();
@@ -63,11 +68,11 @@ class Database {
           'people': people,
           'paymentId': idPayment,
           'userId': userId,
+          'adminId': adminId,
           'packageId': packageId,
           'packageName': packageName,
           'packageImg': packageImg,
           'status': 'RatingPending',
-          // 'price': placesDetails.price,
           'requestedId': uid,
           'userEmail': userDetail.email,
           'userPhone': userDetail.phoneNo,
@@ -222,24 +227,31 @@ class Database {
   }
 
   Future<void> favourites(String documentId, Map data) async {
+    var a = await usersCollection
+        .doc(user!.uid)
+        .get()
+        .then((value) => print("favourites Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+    await favouritesRef.doc(user!.uid).set(data);
+
     await packagesCollection
         .doc(documentId)
         .get()
         .then((value) => print("favourites Updated"))
         .catchError((error) => print("Failed to update user: $error"));
-    await favouritesRef.doc(documentId).set(data);
+    await newFav.doc(documentId).set(data);
 
-    await favouritesRef
+    await newFav
         .doc(documentId)
         .update({'favourite': true, 'userId': user!.uid});
   }
 
   Future<void> removeFromFavourites(String documentId, Map data) async {
-    await favouritesRef
+    await newFav
         .doc(documentId)
         .delete()
-        .then((value) => print("User Deleted"))
-        .catchError((error) => print("Failed to delete user: $error"));
+        .then((value) => print("Fav Deleted"))
+        .catchError((error) => print("Failed to delete fav: $error"));
   }
 
   Future<void> sendReview(

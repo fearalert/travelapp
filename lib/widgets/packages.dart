@@ -186,6 +186,7 @@ class _PackageDetailState extends State<PackageDetail> {
                                       int.parse(peopleController.text), //people
                                       //  '1235'//amount
                                       user!.uid.toString(), //uuid
+                                      '${widget.receivedMap['adminID']}',
                                       '${widget.receivedMap['packageId']}', //packageid
                                       '${widget.receivedMap['packageName']}',
                                       '${widget.receivedMap['imgUrl']}'

@@ -1,11 +1,11 @@
-// ignore_for_file: avoid_function_literals_in_foreach_calls
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:travelapp/model/adminmodel.dart';
 import 'package:travelapp/model/chat.dart';
 import 'package:travelapp/model/usermodel.dart';
+import 'package:travelapp/widgets/snackbar.dart';
 import 'package:uuid/uuid.dart';
 
 import '../authentication/userauthentication.dart';
@@ -14,9 +14,13 @@ DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
 
 CollectionReference usersCollection =
     FirebaseFirestore.instance.collection('users');
+CollectionReference packagesCollection =
+    FirebaseFirestore.instance.collection('packages');
 
 CollectionReference requestedPackage =
     FirebaseFirestore.instance.collection('requestedPackage');
+CollectionReference favouritesRef =
+    FirebaseFirestore.instance.collection('favourites');
 Stream<QuerySnapshot> requestPackageStream = FirebaseFirestore.instance
     .collection('requestedPackage')
     .where('userId', isEqualTo: user!.uid)
@@ -34,6 +38,8 @@ class Database {
     });
     return userData;
   }
+
+//
 
   Future<void> requestPackage(
       DateTime? date,
@@ -69,27 +75,8 @@ class Database {
         .then((value) => print("Requested Successfully"))
         .catchError((error) => print("Failed to request the package: $error"));
   }
-  // Stream<List<PlacesDetails>> getPackages() {
-  //   return FirebaseFirestore.instance
-  //       .collection('packages')
-  //       .snapshots()
-  //       .map((snapshot) {
-  //     return snapshot.docs
-  //         .map((doc) => PlacesDetails.fromMap(doc.data()))
-  //         .toList();
-  //   });
-  // }
 
-  //   Future<String?> getToken() async {
-  //   await FirebaseFirestore.instance
-  //       .collection('collectionPath')
-  //       .doc()
-  //       .snapshots()
-  //       .map((snapshot) {
-  //     return snapshot.data()!['token'];
-  //   });
-  // }
-
+//
   Future<void> deleteRequest(String requestId) {
     return requestedPackage
         .doc(requestId)
@@ -98,6 +85,7 @@ class Database {
         .catchError((error) => print("Failed to delete user: $error"));
   }
 
+//
   Future<void> deleteRequestAfterDate() {
     return requestedPackage
         .where(
@@ -108,13 +96,7 @@ class Database {
         .then((value) => value.docs.forEach((doc) => doc.reference.delete()));
   }
 
-  Future<void> updatePhoneNo(String userId) {
-    return usersCollection
-        .doc(userId)
-        .update({})
-        .then((value) => print("User Deleted"))
-        .catchError((error) => print("Failed to delete user: $error"));
-  }
+//
 
   Future<void> addPayment(Map<String, dynamic> data) {
     return FirebaseFirestore.instance.collection('payments').doc().set(data);
@@ -135,6 +117,7 @@ class Database {
     await messageRef.add(message.toMap());
   }
 
+//
   Future<String?> getMyToken() async {
     final userQuery = await FirebaseFirestore.instance
         .collection('users')
@@ -146,6 +129,7 @@ class Database {
     return token;
   }
 
+//
   void saveToken(String token) async {
     final userQuery = await FirebaseFirestore.instance
         .collection('users')
@@ -162,75 +146,122 @@ class Database {
     }
   }
 
+//
   getUserName() {
     return userDetail.name;
   }
 
+//
   Future<String?> getToken(String? uid) async {
     final userQuery = await FirebaseFirestore.instance
-        .collection('users')
-        .where('id', isEqualTo: user!.uid)
+        .collection('admins')
+        .where('id', isEqualTo: uid)
         .get();
 
     final userQueryDocsSnap = userQuery.docs[0];
-    Future<void> sendMessage(String text, String packageName) async {
-      final messageRef = FirebaseFirestore.instance
-          .collection('messages')
-          .doc(user!.uid)
-          .collection(packageName);
-      final message = Chat(
-        message: text,
-        userName: userDetail.name.toString(),
-        time: Timestamp.now(),
-        uid: user!.uid,
-      );
 
-      return userQueryDocsSnap.data()['token'];
+    return userQueryDocsSnap.data()['token'];
+  }
+
+//
+  Future<void> changeRatingState({String? requestKey, bool? state}) async {
+    final userQuery = await FirebaseFirestore.instance
+        .collection('requestedPackage')
+        .where('requestedId', isEqualTo: requestKey)
+        .get();
+
+    final userQueryDocsSnap = userQuery.docs[0];
+    final userRef = FirebaseFirestore.instance
+        .collection('requestedPackage')
+        .doc(userQueryDocsSnap.id);
+    await userRef.update({'ratingState': state});
+
+    if (kDebugMode) {
+      print("Rating state changed");
+    }
+  }
+
+//
+  Future<void> updateRatingAndReview({
+    String? packageId,
+    String? review,
+    double? rating,
+  }) async {
+    final packageQuery = await FirebaseFirestore.instance
+        .collection('packages')
+        .where('id', isEqualTo: packageId)
+        .get();
+    final packageQueryDocsSnap = packageQuery.docs[0];
+    final packageRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(packageQueryDocsSnap.id);
+    await packageRef.update({
+      'rating': rating,
+      'review': review,
+    });
+
+    double avgRating = (packageQueryDocsSnap.data()['rating'] + rating) / 2;
+    await packageRef.update({'rating': avgRating});
+    if (kDebugMode) {
+      print("Rating and review updated");
     }
 
-    Future<void> changeRatingState({String? requestKey, bool? state}) async {
-      final userQuery = await FirebaseFirestore.instance
-          .collection('requestedPackage')
-          .where('requestedId', isEqualTo: requestKey)
-          .get();
+    if (review!.isNotEmpty) {}
+  }
 
-      final userQueryDocsSnap = userQuery.docs[0];
-      final userRef = FirebaseFirestore.instance
-          .collection('requestedPackage')
-          .doc(userQueryDocsSnap.id);
-      await userRef.update({'ratingState': state});
+  Future<void> favourites(String documentId, Map data) async {
+    await packagesCollection
+        .doc(documentId)
+        .get()
+        .then((value) => print("favourites Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+    await favouritesRef.doc(documentId).set(data);
 
-      if (kDebugMode) {
-        print("Rating state changed");
-      }
-    }
+    await favouritesRef
+        .doc(documentId)
+        .update({'favourite': true, 'userId': user!.uid});
+  }
 
-    Future<void> updateRatingAndReview({
-      String? packageId,
-      String? review,
-      double? rating,
-    }) async {
-      final packageQuery = await FirebaseFirestore.instance
-          .collection('packages')
-          .where('id', isEqualTo: packageId)
-          .get();
-      final packageQueryDocsSnap = packageQuery.docs[0];
-      final packageRef = FirebaseFirestore.instance
-          .collection('users')
-          .doc(packageQueryDocsSnap.id);
-      await packageRef.update({
-        'rating': rating,
-        'review': review,
-      });
+  Future<void> removeFromFavourites(String documentId, Map data) async {
+    await favouritesRef
+        .doc(documentId)
+        .delete()
+        .then((value) => print("User Deleted"))
+        .catchError((error) => print("Failed to delete user: $error"));
+  }
 
-      double avgRating = (packageQueryDocsSnap.data()['rating'] + rating) / 2;
-      await packageRef.update({'rating': avgRating});
-      if (kDebugMode) {
-        print("Rating and review updated");
-      }
+  Future<void> sendReview(
+      String packageId, double rating, String comment) async {
+    double newrating = rating;
+    double totalUserRate = await FirebaseFirestore.instance
+        .collection('packages')
+        .doc(packageId)
+        .collection('ratingReviews')
+        .get()
+        .then((value) => value.size.toDouble());
 
-      if (review!.isNotEmpty) {}
-    }
+    var oldavg = await FirebaseFirestore.instance
+        .collection('packages')
+        .doc(packageId)
+        .get()
+        .then((value) => value.data()!['avgRating']);
+
+    String a = oldavg.toString();
+
+    double oldavgRating = double.parse(a);
+
+    double newAvgRating =
+        ((oldavgRating * totalUserRate) + newrating) / (totalUserRate + 1);
+    await FirebaseFirestore.instance
+        .collection('packages')
+        .doc(packageId)
+        .update({'avgRating': newAvgRating});
+
+    await FirebaseFirestore.instance
+        .collection('packages')
+        .doc(packageId)
+        .collection('ratingReviews')
+        .add({'rating': rating, 'review': comment, 'userId': user!.uid});
   }
 }
 

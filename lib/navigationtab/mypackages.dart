@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:travelapp/screens/chats.dart';
 import 'package:travelapp/widgets/snackbar.dart';
+import 'package:rating_dialog/rating_dialog.dart';
 
 class MyPackages extends StatelessWidget {
   const MyPackages({Key? key}) : super(key: key);
@@ -114,12 +115,12 @@ class MyPackages extends StatelessWidget {
                                         onTap: () async {
                                           String? token = await database
                                               .getToken(data['requestedId']);
-                                          await database.deleteRequest(
-                                              data['requestedId']);
+                                          await database
+                                              .deleteRequest(data['adminId']);
                                           getSnackBar(
                                             title: 'Request Delete',
-                                            message:
-                                                'Request Deleted Successfully',
+                                            message: 'Request Deleted for ' +
+                                                data['packageName'],
                                             color: Colors.green.shade300,
                                           );
                                           try {
@@ -129,7 +130,7 @@ class MyPackages extends StatelessWidget {
                                                 headers: <String, String>{
                                                   'Content-Type':
                                                       'application/json; charset=UTF-8',
-                                                  'Authorization': "$key",
+                                                  'Authorization': key,
                                                 },
                                                 body: jsonEncode(
                                                   {
@@ -147,7 +148,7 @@ class MyPackages extends StatelessWidget {
                                                           "FLUTTER_NOTIFICATION_CLICK",
                                                       "status": "done"
                                                     },
-                                                    "to": "$token"
+                                                    "to": token
                                                   },
                                                 ));
                                             if (kDebugMode) {
@@ -221,6 +222,79 @@ class MyPackages extends StatelessWidget {
                                               ),
                                               Text(
                                                 'Chat',
+                                                style: GoogleFonts.laila(
+                                                    fontSize: 12.0,
+                                                    color: Colors.white),
+                                              )
+                                            ],
+                                          )),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          showDialog(
+                                            context: context,
+                                            barrierDismissible:
+                                                true, // set to false if you want to force a rating
+                                            builder: (context) {
+                                              return RatingDialog(
+                                                initialRating: 1.0,
+                                                // your app's name?
+                                                title: const Text(
+                                                  'Rating Dialog',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize: 25,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                // encourage your user to leave a high rating?
+                                                message: const Text(
+                                                  'Tap a star to set your rating. Add more description here if you want.',
+                                                  textAlign: TextAlign.center,
+                                                  style:
+                                                      TextStyle(fontSize: 15),
+                                                ),
+
+                                                submitButtonText: 'Submit',
+                                                commentHint:
+                                                    'Set your custom comment hint',
+                                                onCancelled: () =>
+                                                    print('cancelled'),
+                                                onSubmitted: (response) async {
+                                                  database.sendReview(
+                                                      data['packageId'],
+                                                      response.rating,
+                                                      response.comment);
+                                                },
+                                              );
+                                            },
+                                          );
+                                        },
+                                        child: Container(
+                                          height: 40.0,
+                                          width: 70.0,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade400,
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(12)),
+                                          ),
+                                          child: Center(
+                                              child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              const Icon(
+                                                Icons.rate_review,
+                                                color: Colors.white,
+                                                size: 14,
+                                              ),
+                                              Text(
+                                                'Rate',
                                                 style: GoogleFonts.laila(
                                                     fontSize: 12.0,
                                                     color: Colors.white),

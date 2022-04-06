@@ -15,11 +15,8 @@ import 'package:travelapp/screens/homescreen.dart';
 import 'package:travelapp/utils/utils.dart';
 import 'package:travelapp/widgets/snackbar.dart';
 
-Key? key;
-
 class PackageDetail extends StatefulWidget {
   final Map<String, dynamic> receivedMap;
-  // ignore: use_key_in_widget_constructors
   const PackageDetail({Key? key, required this.receivedMap});
 
   @override
@@ -209,9 +206,11 @@ class _PackageDetailState extends State<PackageDetail> {
                                   );
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(successsnackBar);
-                                  String? token = await database.getToken(
-                                      widget.receivedMap['packageId']);
-                                  String? name = await database.getUserName();
+                                  String? token = await database
+                                      .getToken(widget.receivedMap['adminID']);
+                                  print(token);
+                                  // String? name = await database.getUserName();
+                                  // print(name);
                                   if (kDebugMode) {
                                     print(token);
                                   }
@@ -222,12 +221,12 @@ class _PackageDetailState extends State<PackageDetail> {
                                         headers: <String, String>{
                                           'Content-Type':
                                               'application/json; charset=UTF-8',
-                                          'Authorization': "$key",
+                                          'Authorization': key,
                                         },
                                         body: jsonEncode(
                                           {
                                             "notification": {
-                                              "body": "New order from" + name!,
+                                              "body": "New Bookings order",
                                               "title": "Bookings Alert",
                                               "android_channel_id":
                                                   "high_importance_channel"
@@ -238,7 +237,7 @@ class _PackageDetailState extends State<PackageDetail> {
                                                   "FLUTTER_NOTIFICATION_CLICK",
                                               "status": "done"
                                             },
-                                            "to": "$token"
+                                            "to": token
                                           },
                                         ));
                                     if (kDebugMode) {
@@ -378,8 +377,9 @@ class _PackageDetailState extends State<PackageDetail> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                const RatingStars(
-                  value: 3.5,
+                RatingStars(
+                  value: double.parse(
+                      widget.receivedMap['avgRating'].toStringAsFixed(2)),
                   starCount: 5,
                   starSize: 16,
                 ),

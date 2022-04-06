@@ -2,127 +2,49 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:travelapp/authentication/userauthentication.dart';
 import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/model/database.dart';
-import 'package:travelapp/screens/favourites.dart';
-import 'package:travelapp/screens/login.dart';
-import 'package:travelapp/utils/search.dart';
-import 'package:travelapp/utils/utils.dart';
 import 'package:travelapp/widgets/packages.dart';
 import 'package:travelapp/widgets/snackbar.dart';
 
-class HomePage extends StatefulWidget {
-  static const id = '/homePage';
-  const HomePage({Key? key}) : super(key: key);
+class Favourite extends StatefulWidget {
+  static const id = '/favourite';
+  const Favourite({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<Favourite> createState() => _FavouriteState();
 }
 
-class _HomePageState extends State<HomePage> {
-  final Stream<QuerySnapshot> _packagestream =
-      FirebaseFirestore.instance.collection('packages').snapshots();
+class _FavouriteState extends State<Favourite> {
+  final Stream<QuerySnapshot> favouriteStream = FirebaseFirestore.instance
+      .collection('favourites')
+      .where('userId', isEqualTo: user!.uid)
+      .snapshots();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: kPrimaryColor,
+        title: Text('Explore favourites',
+            style: GoogleFonts.laila(
+              fontSize: 20.0,
+              fontWeight: FontWeight.w600,
+            )),
+        centerTitle: true,
+      ),
       backgroundColor: const Color(0xffffffff),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
           child: Column(
             children: [
-              Container(
-                decoration: const BoxDecoration(
-                  color: kTextfieldColor,
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: const [
-                        CategoryPageHeader(),
-                        CategoryUserImage(),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    GestureDetector(
-                        onTap: () {
-                          Get.toNamed(SearchPage.id);
-                        },
-                        child: Container(
-                          height: 45.0,
-                          width: 260,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                          ),
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.search),
-                                  Text('     Search Here',
-                                      style: GoogleFonts.laila(
-                                        color: Colors.black,
-                                        fontSize: 12.0,
-                                        fontWeight: FontWeight.normal,
-                                      )),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                  ],
-                ),
-              ),
               const SizedBox(
-                height: 25,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Explore Packages',
-                      style: GoogleFonts.laila(
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.w600,
-                      )),
-                  GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: ((context) => const Favourite())));
-                      },
-                      child: Container(
-                        height: 45.0,
-                        width: 70,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                        ),
-                        child: const Icon(Icons.favorite),
-                      )),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: const [
-                  SizedBox(width: 160, child: Divider()),
-                ],
+                height: 10,
               ),
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: _packagestream,
+                  stream: favouriteStream,
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasError) {
@@ -199,15 +121,17 @@ class _HomePageState extends State<HomePage> {
                               ),
                               trailing: IconButton(
                                 onPressed: () {
-                                  database.favourites(data['packageId'], data);
+                                  database.removeFromFavourites(
+                                      data['packageId'], data);
+
                                   getSnackBar(
                                       color: Colors.green.shade300,
-                                      title: 'Sucessful',
-                                      message: 'Added to favourites');
+                                      title: 'Removed',
+                                      message: 'Removed from favourites');
                                 },
                                 icon: const Icon(
                                   Icons.favorite,
-                                  color: Colors.red,
+                                  color: Colors.grey,
                                 ),
                               ),
                             ),
@@ -238,27 +162,5 @@ class CategoryPageHeader extends StatelessWidget {
         color: Colors.black,
       ),
     );
-  }
-}
-
-class CategoryUserImage extends StatelessWidget {
-  const CategoryUserImage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(bottom: 20.0),
-        child: CircleAvatar(
-          child: IconButton(
-            onPressed: () {
-              userAuthentication.logOut();
-              Get.offAndToNamed(LogInScreen.id);
-            },
-            icon: const Icon(
-              Icons.logout_rounded,
-              // backgroundColor: Colors.red[200],
-            ),
-          ),
-        ));
   }
 }

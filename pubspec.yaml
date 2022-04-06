@@ -54,6 +54,7 @@ dependencies:
   encrypt: ^5.0.1
   khalti_flutter: ^2.0.2
   flutter_local_notifications: ^9.4.0
+  rating_dialog: ^2.0.3
 
 
 dev_dependencies:

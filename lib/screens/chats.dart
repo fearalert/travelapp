@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:travelapp/authentication/userauthentication.dart';
 import 'package:travelapp/model/database.dart';
-import 'package:travelapp/widgets/packages.dart';
+import 'package:travelapp/constants/constants.dart';
 
 import 'homescreen.dart';
 
@@ -162,7 +162,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       headers: <String, String>{
                                         'Content-Type':
                                             'application/json; charset=UTF-8',
-                                        'Authorization': "$key",
+                                        'Authorization': key,
                                       },
                                       body: jsonEncode(
                                         {

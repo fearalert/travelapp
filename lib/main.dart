@@ -6,6 +6,7 @@ import 'package:travelapp/controllers/registrationcontroller.dart';
 import 'package:travelapp/navigationtab/homepage.dart';
 import 'package:travelapp/navigationtab/profile.dart';
 import 'package:travelapp/screens/confirmverification.dart';
+import 'package:travelapp/screens/favourites.dart';
 import 'package:travelapp/screens/forgotpassword.dart';
 import 'package:travelapp/screens/homescreen.dart';
 import 'package:travelapp/screens/login.dart';
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
               GetPage(name: MainScreen.id, page: () => const MainScreen()),
               GetPage(name: Profile.id, page: () => const Profile()),
               GetPage(name: SearchPage.id, page: () => const SearchPage()),
+              GetPage(name: Favourite.id, page: () => const Favourite()),
               GetPage(
                   name: ForgotPasswordScreen.id,
                   page: () => ForgotPasswordScreen()),

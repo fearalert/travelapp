@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Chat {
   String? message;
   String? userName;
+
   Timestamp? time;
   String? uid;
 

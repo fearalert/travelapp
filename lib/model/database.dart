@@ -173,52 +173,64 @@ class Database {
         .get();
 
     final userQueryDocsSnap = userQuery.docs[0];
+    Future<void> sendMessage(String text, String packageName) async {
+      final messageRef = FirebaseFirestore.instance
+          .collection('messages')
+          .doc(user!.uid)
+          .collection(packageName);
+      final message = Chat(
+        message: text,
+        userName: userDetail.name.toString(),
+        time: Timestamp.now(),
+        uid: user!.uid,
+      );
 
-    return userQueryDocsSnap.data()['token'];
-  }
-
-  Future<void> changeRatingState({String? requestKey, bool? state}) async {
-    final userQuery = await FirebaseFirestore.instance
-        .collection('requestedPackage')
-        .where('requestedId', isEqualTo: requestKey)
-        .get();
-
-    final userQueryDocsSnap = userQuery.docs[0];
-    final userRef = FirebaseFirestore.instance
-        .collection('requestedPackage')
-        .doc(userQueryDocsSnap.id);
-    await userRef.update({'ratingState': state});
-
-    if (kDebugMode) {
-      print("Rating state changed");
-    }
-  }
-
-  Future<void> updateRatingAndReview({
-    String? packageId,
-    String? review,
-    double? rating,
-  }) async {
-    final packageQuery = await FirebaseFirestore.instance
-        .collection('packages')
-        .where('id', isEqualTo: packageId)
-        .get();
-    final packageQueryDocsSnap = packageQuery.docs[0];
-    final packageRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(packageQueryDocsSnap.id);
-    await packageRef.update({
-      'rating': rating,
-      'review': review,
-    });
-
-    double avgRating = (packageQueryDocsSnap.data()['rating'] + rating) / 2;
-    await packageRef.update({'rating': avgRating});
-    if (kDebugMode) {
-      print("Rating and review updated");
+      return userQueryDocsSnap.data()['token'];
     }
 
-    if (review!.isNotEmpty) {}
+    Future<void> changeRatingState({String? requestKey, bool? state}) async {
+      final userQuery = await FirebaseFirestore.instance
+          .collection('requestedPackage')
+          .where('requestedId', isEqualTo: requestKey)
+          .get();
+
+      final userQueryDocsSnap = userQuery.docs[0];
+      final userRef = FirebaseFirestore.instance
+          .collection('requestedPackage')
+          .doc(userQueryDocsSnap.id);
+      await userRef.update({'ratingState': state});
+
+      if (kDebugMode) {
+        print("Rating state changed");
+      }
+    }
+
+    Future<void> updateRatingAndReview({
+      String? packageId,
+      String? review,
+      double? rating,
+    }) async {
+      final packageQuery = await FirebaseFirestore.instance
+          .collection('packages')
+          .where('id', isEqualTo: packageId)
+          .get();
+      final packageQueryDocsSnap = packageQuery.docs[0];
+      final packageRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(packageQueryDocsSnap.id);
+      await packageRef.update({
+        'rating': rating,
+        'review': review,
+      });
+
+      double avgRating = (packageQueryDocsSnap.data()['rating'] + rating) / 2;
+      await packageRef.update({'rating': avgRating});
+      if (kDebugMode) {
+        print("Rating and review updated");
+      }
+
+      if (review!.isNotEmpty) {}
+    }
   }
 }
 

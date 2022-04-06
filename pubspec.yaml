@@ -55,6 +55,7 @@ dependencies:
   khalti_flutter: ^2.0.2
   flutter_local_notifications: ^9.4.0
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

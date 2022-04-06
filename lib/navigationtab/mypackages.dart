@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:travelapp/constants/constants.dart';
 import 'package:travelapp/model/database.dart';
 import 'package:intl/intl.dart';
-import 'package:travelapp/screens/chatscreen.dart';
+import 'package:travelapp/screens/chats.dart';
 import 'package:travelapp/widgets/snackbar.dart';
 
 class MyPackages extends StatelessWidget {
@@ -152,7 +152,8 @@ class MyPackages extends StatelessWidget {
                                         onTap: () {
                                           Get.off(
                                             ChatScreen(
-                                              adminId: '',
+                                              packageName: data['packageId'],
+                                             
                                             ),
                                           );
                                         },

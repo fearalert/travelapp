@@ -1,14 +1,26 @@
+
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:travelapp/authentication/userauthentication.dart';
+
 class Chat {
-  String? _message;
-  String? _sentBy;
+  String? message;
+  String? userName;
+  String? userImg;
+  Timestamp? time;
+  String? uid;
 
-  Chat();
+  Chat({ this.message, this.userName, this.userImg, this.time, this.uid});
 
-  String get message => _message!;
-  String get sentBy => _sentBy!;
 
-  Chat.fromData(Map chatData) {
-    _message = chatData['message'];
-    _sentBy = chatData['sentBy'];
+  Map<String, dynamic> toMap() {
+    return {
+      'message': message,
+      'userName': userName,
+      'userImg': userImg,
+      'time': time,
+      'uid': uid,
+    };
   }
 }
+

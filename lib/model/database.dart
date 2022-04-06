@@ -1,8 +1,9 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/foundation.dart';
+import 'package:travelapp/model/chat.dart';
 import 'package:travelapp/model/usermodel.dart';
 import 'package:uuid/uuid.dart';
 
@@ -15,10 +16,10 @@ CollectionReference usersCollection =
 
 CollectionReference requestedPackage =
     FirebaseFirestore.instance.collection('requestedPackage');
-Stream<QuerySnapshot> requestPackageStream = FirebaseFirestore.instance
-    .collection('requestedPackage')
-    .where('userId', isEqualTo: user!.uid)
-    .snapshots();
+Stream<QuerySnapshot> requestPackageStream =
+    FirebaseFirestore.instance.collection('requestedPackage').where('userId', isEqualTo: user!.uid).snapshots();
+
+     
 
 class Database {
   Future<Stream> getCurrentUserData() async {
@@ -28,9 +29,7 @@ class Database {
         .get()
         .then((value) {
       userDetail = UserModel.fromMap(value.data());
-      if (kDebugMode) {
-        print(value.data());
-      }
+      print(value.data());
     });
     return userData;
   }
@@ -69,7 +68,6 @@ class Database {
         .then((value) => print("Requested Successfully"))
         .catchError((error) => print("Failed to request the package: $error"));
   }
-
   // Stream<List<PlacesDetails>> getPackages() {
   //   return FirebaseFirestore.instance
   //       .collection('packages')
@@ -80,16 +78,16 @@ class Database {
   //         .toList();
   //   });
   // }
-  // ignore: body_might_complete_normally_nullable
-  Future<String?> getToken() async {
-    await FirebaseFirestore.instance
-        .collection('collectionPath')
-        .doc()
-        .snapshots()
-        .map((snapshot) {
-      return snapshot.data()!['token'];
-    });
-  }
+
+  //   Future<String?> getToken() async {
+  //   await FirebaseFirestore.instance
+  //       .collection('collectionPath')
+  //       .doc()
+  //       .snapshots()
+  //       .map((snapshot) {
+  //     return snapshot.data()!['token'];
+  //   });
+  // }
 
   void saveToken(String token) async {
     await usersCollection.doc(user!.uid).update({'token': token});
@@ -132,6 +130,23 @@ class Database {
 
     return FirebaseFirestore.instance.collection('payments').doc().set(data);
   }
+
+  Future<void> sendMessage(String text, String packageName)async{
+   final messageRef =  FirebaseFirestore.instance.collection('messages').doc(user!.uid).collection(packageName);
+  final message = Chat(
+    message: text,
+    userName: userDetail.name.toString(),
+    userImg : userDetail.profileUrl.toString(),
+    time: Timestamp.now(),
+    uid: user!.uid,
+    
+  );
+
+  await messageRef.add(message.toMap());
+
+ }
+
+
 }
 
 Database database = Database();

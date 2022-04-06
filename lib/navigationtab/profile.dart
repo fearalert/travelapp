@@ -32,7 +32,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  final userController = Get.put(UserController());
+  
   File? _image;
   Future pickImageFromGallery() async {
     try {

@@ -10,6 +10,8 @@ import 'package:travelapp/utils/search.dart';
 import 'package:travelapp/utils/utils.dart';
 import 'package:travelapp/widgets/packages.dart';
 
+import '../controllers/usercontroller.dart';
+
 class HomePage extends StatefulWidget {
   static const id = '/homePage';
   const HomePage({Key? key}) : super(key: key);
@@ -19,6 +21,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+   final userController = Get.put(UserController());
   String? searchName = " ";
   final Stream<QuerySnapshot> _packagestream =
       FirebaseFirestore.instance.collection('packages').snapshots();

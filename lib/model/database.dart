@@ -136,7 +136,6 @@ class Database {
   final message = Chat(
     message: text,
     userName: userDetail.name.toString(),
-    userImg : userDetail.profileUrl.toString(),
     time: Timestamp.now(),
     uid: user!.uid,
     

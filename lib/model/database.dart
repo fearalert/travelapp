@@ -7,7 +7,6 @@ import 'package:travelapp/model/chat.dart';
 import 'package:travelapp/model/usermodel.dart';
 import 'package:travelapp/widgets/snackbar.dart';
 import 'package:uuid/uuid.dart';
-
 import '../authentication/userauthentication.dart';
 
 DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
@@ -32,12 +31,13 @@ Stream<QuerySnapshot> requestPackageStream = FirebaseFirestore.instance
     .snapshots();
 
 class Database {
-  Future<Stream> getCurrentUserData() async {
+  Future<void> getCurrentUserData() async {
     final userData = await FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .get()
         .then((value) {
+      // List<userData> userDetail =
       userDetail = UserModel.fromMap(value.data());
       print(value.data());
     });

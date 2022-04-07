@@ -15,6 +15,7 @@ editProfile() async {
     await usersCollection.doc(user!.uid).update({
       'name': textController.nameController.text.trim(),
     });
+    await database.getCurrentUserData();
     getSnackBar(
         title: 'SUCCESS!',
         message: 'Your username was changed',
@@ -50,6 +51,8 @@ editProfile() async {
     await usersCollection.doc(user!.uid).update({
       'phoneNo': textController.phoneController.text.trim(),
     });
+    await database.getCurrentUserData();
+
     print('phoneNo: $phoneNo');
     getSnackBar(
         title: 'SUCCESS!',
@@ -88,6 +91,8 @@ editProfile() async {
       'name': textController.nameController.text.trim(),
       'phoneNo': textController.phoneController.text.trim(),
     });
+    await database.getCurrentUserData();
+
     getSnackBar(
         title: 'SUCCESS!',
         message: 'Your profile was updated',

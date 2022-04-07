@@ -123,9 +123,10 @@ class _MyPackagesState extends State<MyPackages> {
                                           await database.deleteRequest(
                                               data['requestedId']);
                                           getSnackBar(
-                                            title: 'Request Delete',
-                                            message: 'Request Deleted for ' +
-                                                data['packageName'],
+                                            title: 'Bookings Cancelled',
+                                            message:
+                                                'Bookings Cancelled by user for ' +
+                                                    data['packageName'],
                                             color: Colors.green.shade300,
                                           );
                                           try {

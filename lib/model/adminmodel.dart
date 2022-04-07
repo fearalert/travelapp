@@ -18,4 +18,4 @@ class AdminModel {
   }
 }
 
-AdminModel adminModel = AdminModel();
+// AdminModel adminModel = AdminModel();

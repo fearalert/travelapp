@@ -153,8 +153,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                 messageText = null;
 
                                 String? token =
-                                    await database.getToken(user!.uid);
+                                    await database.getToken(adminId);
+                                print(token);
                                 String? receiver = await database.getUserName();
+                                print(receiver);
                                 try {
                                   http.post(
                                       Uri.parse(
@@ -180,7 +182,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 "FLUTTER_NOTIFICATION_CLICK",
                                             "status": "done"
                                           },
-                                          "to": "$token"
+                                          "to": token
                                         },
                                       ));
                                   if (kDebugMode) {

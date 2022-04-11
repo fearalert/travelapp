@@ -229,7 +229,7 @@ class UserAuthentication {
         userModel.email = user!.email;
         userModel.id = user!.uid;
         userModel.name = user!.displayName;
-        userModel.phoneNo = registrationController.phoneController.text;
+        userModel.phoneNo = user!.phoneNumber;
         userModel.profileUrl = user!.photoURL;
         await FirebaseFirestore.instance
             .collection("users")
@@ -245,6 +245,7 @@ class UserAuthentication {
         return userCredential.user;
       }
     } catch (error) {
+      print(error);
       getSnackBar(
         title: "Error",
         message: 'Something went wrong.',
